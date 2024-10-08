@@ -10,11 +10,19 @@ struct coordinates{
 struct Node{
     coordinates c;
     Node* next;
+    Node* prev;
+    Node* left;
+    Node* right;
+    char data;
 
-    Node(int x =0 , int y =0 , Node* n = NULL){
+    Node(int x =0 , int y =0 , Node* n = NULL , Node* p = NULL , Node* l= NULL , Node* r =NULL, char d = '\0'){
         c.xcor =x;
         c.ycor =y;
         next  = n;
+        prev = p;
+        left = l;
+        right = r;
+        data = d;
     }
 };
 
@@ -28,13 +36,13 @@ class List{
 
         void append(Node* add){
             if(isEmpty() == true){
-                head = new Node((head->c).xcor , (head->c).ycor);
+                head = new Node((head->c).xcor , (head->c).ycor , NULL,NULL,NULL,NULL,add->data);
             }else{
                 Node* temp = head;
                 while(temp->next!= NULL){
                     temp=temp->next;
                 }
-                temp->next = new Node((head->c).xcor , (head->c).ycor);
+                temp->next = new Node((head->c).xcor , (head->c).ycor,NULL,temp,NULL,NULL,add->data);
             }
         }
 
@@ -144,6 +152,41 @@ List2pointers createListzeros(int size){
         Node2pointers* temp = new Node2pointers(0,0,NULL,NULL,l);
         l1.append(temp);
     }
+
+    Node2pointers*temp= l1.head; 
+    Node* prevtrack ;
+    Node* forwtrack ;
+    for (int i=0 ; i<size ; i++){
+        Node* temp2 = (temp->list).head;
+        if(i>0 && i<size-1){
+            prevtrack = ((temp->prev)->list).head;
+            forwtrack = ((temp->next)->list).head;
+        }else if(i==0){
+            forwtrack = ((temp->next)->list).head;
+        }else if(i== size-1){
+            prevtrack = ((temp->prev)->list).head;
+        }
+        for(int j=0 ; j<size; j++){
+            if(i==0){
+                temp2->left = NULL;
+                temp2->right = forwtrack;
+                forwtrack = forwtrack->next;
+            }else if(i<size-1){
+                temp2->left = prevtrack;
+                temp2->right = forwtrack;
+                prevtrack = prevtrack->next;
+                forwtrack = forwtrack->next;
+            }else if (i == size-1){
+                temp2->right = NULL;
+                temp2->prev = prevtrack;
+                prevtrack = prevtrack->next;
+            }
+            temp2->data = '.';
+            temp2 = temp2->next;
+        }
+        temp = temp->next;
+    }
+
     return l1;
 }
 
@@ -157,14 +200,17 @@ class Grid{
             size = s;
         }
 
-        void createGrid(){
+        void DisplayGrid(){
             grid = createListzeros(size);
 
+            
             //grid to be created
         }    
 
 
 };
+
+
 
 class Easy{
     public:
@@ -180,8 +226,23 @@ class Easy{
             mvprintw(2,30,"Key Status: ");
             mvprintw(3,10,"Next drop in line:  ");
 
+            displayGrid(20);
+
             getch();
             endwin();
+        }
+
+        void displayGrid(int size){
+            List2pointers grid = createListzeros(size);
+            Node2pointers* temp = grid.head;
+            for(int i=0 ; i<size ; i++){
+                Node* temp2 = (temp->list).head; 
+                for(int j=0 ; j<size ; j++){
+                    mvprintw((temp2->c).xcor , (temp2->c).ycor , &(temp2->data) );
+                    temp2 = temp2->next;
+                }
+                temp = temp->next;
+            }
         }
 
 
