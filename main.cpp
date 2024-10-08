@@ -210,8 +210,6 @@ class Grid{
 
 };
 
-
-
 class Easy{
     public:
 
