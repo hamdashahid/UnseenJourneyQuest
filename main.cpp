@@ -74,19 +74,25 @@ class List{
     
 };
 
-
 struct Node2pointers{
     coordinates c;
     Node2pointers* next;
     Node2pointers* prev;
     List list;
 
-    Node2pointers(int x =0 , int y=0 , Node2pointers* n = NULL , Node2pointers* p = NULL , List l = NULL  ){
+    Node2pointers(List l ,int x =0 , int y=0 , Node2pointers* n = NULL , Node2pointers* p = NULL  ){
         c.xcor = x;
         c.ycor = y;
         next = n;
         prev = p;
         list = l;
+    }
+
+    Node2pointers(int x =0 , int y=0 , Node2pointers* n = NULL , Node2pointers* p = NULL  ){
+        c.xcor = x;
+        c.ycor = y;
+        next = n;
+        prev = p;
     }
 };
 
@@ -147,9 +153,10 @@ List2pointers createListzeros(int size){
         l.append(temp);
     }
     List2pointers l1;
-    l1.head = new Node2pointers(0,0,NULL,NULL,l);
+    l1.head = new Node2pointers(l,0,0,NULL,NULL);
+    cout<<"best";
     for (int i=1 ; i<size; i++){
-        Node2pointers* temp = new Node2pointers(0,0,NULL,NULL,l);
+        Node2pointers* temp = new Node2pointers(l,0,0,NULL,NULL);
         l1.append(temp);
     }
 
@@ -210,7 +217,7 @@ class Grid{
 
 };
 
-class Easy{
+class Easy{ 
     public:
 
         void Display(){
@@ -224,7 +231,7 @@ class Easy{
             mvprintw(2,30,"Key Status: ");
             mvprintw(3,10,"Next drop in line:  ");
 
-            displayGrid(20);
+            displayGrid(5);
 
             getch();
             endwin();
@@ -233,9 +240,9 @@ class Easy{
         void displayGrid(int size){
             List2pointers grid = createListzeros(size);
             Node2pointers* temp = grid.head;
-            for(int i=0 ; i<size ; i++){
+            for(int i=1 ; i<size ; i++){
                 Node* temp2 = (temp->list).head; 
-                for(int j=0 ; j<size ; j++){
+                for(int j=1 ; j<size ; j++){
                     mvprintw((temp2->c).xcor , (temp2->c).ycor , &(temp2->data) );
                     temp2 = temp2->next;
                 }
