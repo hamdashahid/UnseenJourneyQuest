@@ -24,6 +24,7 @@ struct Node{
         right = r;
         data = d;
     }
+    
 };
 
 class List{
@@ -36,29 +37,29 @@ class List{
 
         void append(Node* add){
             if(isEmpty() == true){
-                head = new Node((head->c).xcor , (head->c).ycor , NULL,NULL,NULL,NULL,add->data);
+                head = new Node((add->c).xcor , (add->c).ycor , NULL,NULL,NULL,NULL,add->data);
             }else{
                 Node* temp = head;
                 while(temp->next!= NULL){
                     temp=temp->next;
                 }
-                temp->next = new Node((head->c).xcor , (head->c).ycor,NULL,temp,NULL,NULL,add->data);
+                temp->next = new Node((add->c).xcor , (add->c).ycor,NULL,temp,NULL,NULL,add->data);
             }
         }
 
-        void removefromLast(){
-            if(isEmpty() == true){
-                return;
-            }else{
-                Node* temp = head;
-                while(temp->next!=NULL){
-                    temp = temp->next;
-                }
-                Node* temp2 = temp;
-                temp->next = NULL;
-                delete temp;
-            }
-        }
+        // void removefromLast(){
+        //     if(isEmpty() == true){
+        //         return;
+        //     }else{
+        //         Node* temp = head;
+        //         while(temp->next!=NULL){
+        //             temp = temp->next;
+        //         }
+        //         Node* temp2 = temp;
+        //         temp->next = NULL;
+        //         delete temp;
+        //     }
+        // }
 
         bool isEmpty(){
             if(head == NULL){
@@ -80,20 +81,20 @@ struct Node2pointers{
     Node2pointers* prev;
     List list;
 
-    Node2pointers(List l ,int x =0 , int y=0 , Node2pointers* n = NULL , Node2pointers* p = NULL  ){
-        c.xcor = x;
-        c.ycor = y;
-        next = n;
-        prev = p;
-        list = l;
-    }
+    // Node2pointers(List l ){
+    //     list = l;
+    //     c.xcor = 0;
+    //     c.ycor = 0;
+    //     next = NULL;
+    //     prev = NULL;
+    // }
 
-    Node2pointers(int x =0 , int y=0 , Node2pointers* n = NULL , Node2pointers* p = NULL  ){
-        c.xcor = x;
-        c.ycor = y;
-        next = n;
-        prev = p;
-    }
+    Node2pointers(int x = 0, int y = 0, Node2pointers* n = nullptr, Node2pointers* p = nullptr)
+        : c{x, y}, next(n), prev(p), list() {} // Initialize list to empty
+
+    // void setHead(List l){
+    //     list = l;
+    // }
 };
 
 class List2pointers{
@@ -106,29 +107,30 @@ class List2pointers{
 
         void append(Node2pointers* add){
             if(isEmpty() == true){
-                head = new Node2pointers((head->c).xcor , (head->c).ycor);
+                head = add;
             }else{
                 Node2pointers* temp = head;
                 while(temp->next!= NULL){
                     temp=temp->next;
                 }
-                temp->next = new Node2pointers((head->c).xcor , (head->c).ycor);
+                temp->next = add;
+                add->prev = temp;
             }
         }
 
-        void removefromLast(){
-            if(isEmpty() == true){
-                return;
-            }else{
-                Node2pointers* temp = head;
-                while(temp->next!=NULL){
-                    temp = temp->next;
-                }
-                Node2pointers* temp2 = temp;
-                temp->next = NULL;
-                delete temp;
-            }
-        }
+        // void removefromLast(){
+        //     if(isEmpty() == true){
+        //         return;
+        //     }else{
+        //         Node2pointers* temp = head;
+        //         while(temp->next!=NULL){
+        //             temp = temp->next;
+        //         }
+        //         Node2pointers* temp2 = temp;
+        //         temp->next = NULL;
+        //         delete temp;
+        //     }
+        // }
 
         bool isEmpty(){
             if(head == NULL){
@@ -141,81 +143,121 @@ class List2pointers{
             return head;
         }
 
-        
+        void setHead(List l){
+            head->list = l;
+        }
+
+        void appendList(List l){
+            if(isEmpty() == true){
+                head = new Node2pointers();
+                head->list = l;
+            }else{
+                Node2pointers* temp = head;
+                while(temp->next!= NULL){
+                    temp=temp->next;
+                }
+                temp->next = new Node2pointers();
+                temp->next->list = l;
+            }
+        }
 
 };
 
-List2pointers createListzeros(int size){
+List2pointers createListzeros(int size) {
+    // Step 1: Create a list with nodes initialized to (0, 0)
     List l;
-    l.head = new Node(0,0);
-    for (int i=1 ; i<size ; i++){
-        Node* temp = new Node(0,0);
+    Node* n = new Node(0, 0);
+    l.append(n);
+    
+    for (int i = 1; i < size; i++) {
+        Node* temp = new Node(0, 0);
         l.append(temp);
     }
+
+    // Step 2: Create a List2pointers and append the list to it
     List2pointers l1;
-    l1.head = new Node2pointers(l,0,0,NULL,NULL);
-    cout<<"best";
-    for (int i=1 ; i<size; i++){
-        Node2pointers* temp = new Node2pointers(l,0,0,NULL,NULL);
-        l1.append(temp);
+    for (int i = 0; i < size; i++) {
+        l1.appendList(l);
     }
 
-    Node2pointers*temp= l1.head; 
-    Node* prevtrack ;
-    Node* forwtrack ;
-    for (int i=0 ; i<size ; i++){
+    // Step 3: Traverse and set the left and right pointers of the grid
+    Node2pointers* temp = l1.head;
+    Node* prevtrack = nullptr;
+    Node* forwtrack = nullptr;
+
+    std::cout << "helllooo\n\n";  // Debugging message
+
+    for (int i = 0; i < size && temp != nullptr; i++) {
         Node* temp2 = (temp->list).head;
-        if(i>0 && i<size-1){
-            prevtrack = ((temp->prev)->list).head;
-            forwtrack = ((temp->next)->list).head;
-        }else if(i==0){
-            forwtrack = ((temp->next)->list).head;
-        }else if(i== size-1){
-            prevtrack = ((temp->prev)->list).head;
+
+        // Set prevtrack and forwtrack based on the position in the grid
+        if (i > 0 && i < size - 1) {
+            prevtrack = (temp->prev != nullptr) ? (temp->prev->list).head : nullptr;
+            forwtrack = (temp->next != nullptr) ? (temp->next->list).head : nullptr;
+        } else if (i == 0) {
+            forwtrack = (temp->next != nullptr) ? (temp->next->list).head : nullptr;
+        } else if (i == size - 1) {
+            prevtrack = (temp->prev != nullptr) ? (temp->prev->list).head : nullptr;
         }
-        for(int j=0 ; j<size; j++){
-            if(i==0){
-                temp2->left = NULL;
+
+        for (int j = 0; j < size && temp2 != nullptr; j++) {
+            if (i == 0) {
+                // First row: no left connections
+                temp2->left = nullptr;
                 temp2->right = forwtrack;
-                forwtrack = forwtrack->next;
-            }else if(i<size-1){
+                if (forwtrack != nullptr) {
+                    forwtrack = forwtrack->next;
+                }
+            } else if (i < size - 1) {
+                // Middle rows: connect to previous and next rows
                 temp2->left = prevtrack;
                 temp2->right = forwtrack;
-                prevtrack = prevtrack->next;
-                forwtrack = forwtrack->next;
-            }else if (i == size-1){
-                temp2->right = NULL;
-                temp2->prev = prevtrack;
-                prevtrack = prevtrack->next;
+                if (prevtrack != nullptr) {
+                    prevtrack = prevtrack->next;
+                }
+                if (forwtrack != nullptr) {
+                    forwtrack = forwtrack->next;
+                }
+            } else if (i == size - 1) {
+                // Last row: no right connections
+                temp2->right = nullptr;
+                temp2->left = prevtrack;
+                if (prevtrack != nullptr) {
+                    prevtrack = prevtrack->next;
+                }
             }
+
+            // Assign data and move to the next node in the row
             temp2->data = '.';
             temp2 = temp2->next;
         }
+
+        // Move to the next row in the grid
         temp = temp->next;
     }
 
     return l1;
 }
 
-class Grid{
-    List2pointers grid;
-    int size;
+// class Grid{
+//     List2pointers grid;
+//     int size;
 
-    public:
+//     public:
 
-        Grid(int s){
-            size = s;
-        }
+//         Grid(int s){
+//             size = s;
+//         }
 
-        void DisplayGrid(){
-            grid = createListzeros(size);
+//         void DisplayGrid(){
+//             grid = createListzeros(size);
 
             
-            //grid to be created
-        }    
+//             //grid to be created
+//         }    
 
 
-};
+// };
 
 class Easy{ 
     public:
@@ -239,11 +281,12 @@ class Easy{
 
         void displayGrid(int size){
             List2pointers grid = createListzeros(size);
+            cout<<"yes\n";
             Node2pointers* temp = grid.head;
-            for(int i=1 ; i<size ; i++){
+            for(int i=1 ; i<size && temp != NULL ; i++){
                 Node* temp2 = (temp->list).head; 
                 for(int j=1 ; j<size ; j++){
-                    mvprintw((temp2->c).xcor , (temp2->c).ycor , &(temp2->data) );
+                    mvprintw((temp2->c).xcor , (temp2->c).ycor ,"%c", (temp2->data) );
                     temp2 = temp2->next;
                 }
                 temp = temp->next;
@@ -261,4 +304,3 @@ int main(){
 
     return 0;
 }
-
