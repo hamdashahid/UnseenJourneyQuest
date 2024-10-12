@@ -11,6 +11,12 @@ struct entity{
     int xcor;
     int ycor;
     char value;
+
+    entity(int x =0, int y=0 , char v = '\0'){
+        xcor = x;
+        ycor = y;
+        value = v;
+    }
 };
 
 struct Node{
@@ -262,32 +268,33 @@ class Easy{
             moves =m;
             undo = u;
             score =sc;
-            player = entity();
-            key = entity();
-            bomb = entity();
-            door = entity();
-            coins = entity();
+            player = entity(34,17,'P');
+            key = entity(43,7,'K');
+            bomb = entity(28,14,'B');
+            door = entity(46,6,'D');
+            coins = entity(64,18,'C');
         }
 
         void Display(){
 
             initscr();
-            char a = moves+'0';
-            char b = undo+'0';
-            char c = score+'0';
+            // char a = moves+'0';
+            // char b = undo+'0';
+            // char c = score+'0';
             // char d = moves+'0';
             mvprintw(0,55,"Mode : EASY");
             mvprintw(1,10,"Remaining Moves: ");
-            mvprintw(1,28,&a);
+            mvprintw(1,28,"%d",moves);
             mvprintw(1,40,"Remaining Undos: ");
-            mvprintw(1,58,&b);
+            mvprintw(1,58,"%d",undo);
             mvprintw(2,10,"Score: ");
-            mvprintw(2,18,&c);
+            mvprintw(2,18,"%d" , score);
             mvprintw(2,30,"Key Status: ");
             mvprintw(2,45,"False ");
             mvprintw(3,10,"Next drop in line:  ");
 
             displayGrid();
+            placements();
 
             getch();
             endwin();
@@ -335,6 +342,18 @@ class Easy{
             return li;
         }
 
+        void placements(){
+            // player.value = 'P';
+            mvprintw(player.ycor,player.xcor,"%c",(player.value));
+            mvprintw(key.ycor,key.xcor,"%c",(key.value));
+            mvprintw(bomb.ycor,bomb.xcor,"%c",(bomb.value));
+            mvprintw(door.ycor,door.xcor,"%c",(door.value));
+            mvprintw(coins.ycor,coins.xcor,"%c",(coins.value));
+        }
+
+        void movement(){
+            
+        }
 
 };
 
