@@ -7,6 +7,12 @@ struct coordinates{
     int ycor;
 };
 
+struct entity{
+    int xcor;
+    int ycor;
+    char value;
+};
+
 struct Node{
     coordinates c;
     Node* next;
@@ -165,18 +171,19 @@ class List2pointers{
 
 List2pointers createListzeros(int size) {
     // Step 1: Create a list with nodes initialized to (0, 0)
-    List l;
-    Node* n = new Node(0, 0);
-    l.append(n);
     
-    for (int i = 1; i < size; i++) {
-        Node* temp = new Node(0, 0);
-        l.append(temp);
-    }
-
     // Step 2: Create a List2pointers and append the list to it
     List2pointers l1;
     for (int i = 0; i < size; i++) {
+        List l;
+        Node* n = new Node(0, 0);
+        l.append(n);
+        
+        for (int j = 1; j < size; j++) {
+            Node* temp = new Node(0, 0);
+            l.append(temp);
+        }
+
         l1.appendList(l);
     }
 
@@ -185,8 +192,7 @@ List2pointers createListzeros(int size) {
     Node* prevtrack = nullptr;
     Node* forwtrack = nullptr;
 
-    std::cout << "helllooo\n\n";  // Debugging message
-
+    // std::cout << "helllooo\n\n";  // Debugging message
     for (int i = 0; i < size && temp != nullptr; i++) {
         Node* temp2 = (temp->list).head;
 
@@ -239,65 +245,101 @@ List2pointers createListzeros(int size) {
     return l1;
 }
 
-// class Grid{
-//     List2pointers grid;
-//     int size;
-
-//     public:
-
-//         Grid(int s){
-//             size = s;
-//         }
-
-//         void DisplayGrid(){
-//             grid = createListzeros(size);
-
-            
-//             //grid to be created
-//         }    
-
-
-// };
-
 class Easy{ 
     public:
+        int size;
+        int moves;
+        int undo;
+        int score;
+        entity player;
+        entity key;
+        entity bomb;
+        entity door;
+        entity coins;
+
+        Easy(int s = 0 , int m =0 , int u=0 , int sc=0){
+            size = s;
+            moves =m;
+            undo = u;
+            score =sc;
+            player = entity();
+            key = entity();
+            bomb = entity();
+            door = entity();
+            coins = entity();
+        }
 
         void Display(){
 
             initscr();
-
+            char a = moves+'0';
+            char b = undo+'0';
+            char c = score+'0';
+            // char d = moves+'0';
             mvprintw(0,55,"Mode : EASY");
             mvprintw(1,10,"Remaining Moves: ");
+            mvprintw(1,28,&a);
             mvprintw(1,40,"Remaining Undos: ");
+            mvprintw(1,58,&b);
             mvprintw(2,10,"Score: ");
+            mvprintw(2,18,&c);
             mvprintw(2,30,"Key Status: ");
+            mvprintw(2,45,"False ");
             mvprintw(3,10,"Next drop in line:  ");
 
-            displayGrid(5);
+            displayGrid();
 
             getch();
             endwin();
         }
 
-        void displayGrid(int size){
+        void displayGrid(){
             List2pointers grid = createListzeros(size);
-            cout<<"yes\n";
+            grid = assignCoordinates(grid);
+            // cout<<"yes\n";
             Node2pointers* temp = grid.head;
-            for(int i=1 ; i<size && temp != NULL ; i++){
+            for(int i=0 ; i<size && temp != NULL ; i++){
                 Node* temp2 = (temp->list).head; 
-                for(int j=1 ; j<size ; j++){
-                    mvprintw((temp2->c).xcor , (temp2->c).ycor ,"%c", (temp2->data) );
+                for(int j=0 ; j<size ; j++){
+                    mvprintw((temp2->c).ycor , (temp2->c).xcor ,"%c", (temp2->data) );
+                    cout<<" x : "<<(temp2->c).xcor <<" y : "<<(temp2->c).ycor;
                     temp2 = temp2->next;
                 }
+                cout<<endl;
                 temp = temp->next;
             }
+        }
+
+        List2pointers assignCoordinates(List2pointers li){
+            int x = 25 ;
+            int y = 5;
+            Node2pointers* temp = li.head;
+            for(int i=0 ; i<size && temp != NULL ; i++){
+                Node* temp2 = (temp->list).head; 
+                // int x= xstart+i;
+                // int y = ystart;
+                y = 5;
+                for(int j=0 ; j<size ; j++){
+                    (temp2->c).xcor = x;
+                    (temp2->c).ycor = y;
+                    if(i==size-1 || i== 0 || j==0 || j== size-1){
+                        temp2->data = '#';
+                    }
+                    temp2 = temp2->next;
+                    y+=1.75;
+                }
+                temp = temp->next;
+                x+=3;
+                cout<<endl;
+            }
+            return li;
         }
 
 
 };
 
 int main(){
-    Easy e;
+    Easy e(20);
 
     e.Display();
 
