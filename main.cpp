@@ -262,6 +262,7 @@ class Easy{
         entity bomb;
         entity door;
         entity coins;
+        List2pointers grid;
 
         Easy(int s = 0 , int m =0 , int u=0 , int sc=0){
             size = s;
@@ -273,15 +274,13 @@ class Easy{
             bomb = entity(28,14,'B');
             door = entity(46,6,'D');
             coins = entity(64,18,'C');
+            grid = List2pointers();
         }
 
         void Display(){
 
             initscr();
-            // char a = moves+'0';
-            // char b = undo+'0';
-            // char c = score+'0';
-            // char d = moves+'0';
+        
             mvprintw(0,55,"Mode : EASY");
             mvprintw(1,10,"Remaining Moves: ");
             mvprintw(1,28,"%d",moves);
@@ -295,13 +294,14 @@ class Easy{
 
             displayGrid();
             placements();
+            movement();
 
             getch();
             endwin();
         }
 
         void displayGrid(){
-            List2pointers grid = createListzeros(size);
+            grid = createListzeros(size);
             grid = assignCoordinates(grid);
             // cout<<"yes\n";
             Node2pointers* temp = grid.head;
@@ -323,8 +323,6 @@ class Easy{
             Node2pointers* temp = li.head;
             for(int i=0 ; i<size && temp != NULL ; i++){
                 Node* temp2 = (temp->list).head; 
-                // int x= xstart+i;
-                // int y = ystart;
                 y = 5;
                 for(int j=0 ; j<size ; j++){
                     (temp2->c).xcor = x;
@@ -351,9 +349,85 @@ class Easy{
             mvprintw(coins.ycor,coins.xcor,"%c",(coins.value));
         }
 
-        void movement(){
-            
+        void movement() {
+    // Enable keyboard input for special keys like arrow keys
+    keypad(stdscr, TRUE);
+    // Disable line buffering and allow non-blocking input
+    cbreak();
+    noecho();
+    nodelay(stdscr, TRUE);  // Non-blocking getch()
+
+    int ch;
+    
+    while (true) {
+        // Get the input key
+        ch = getch();
+        mvprintw(player.ycor,player.xcor,".");
+        switch (ch) {
+            case KEY_UP:
+                if (player.ycor>6) {
+                    player.ycor-=1;  // Move up
+                    // mvprintw(0, 0, "Moved UP");  // Debug message
+                }
+                break;
+
+            case KEY_DOWN:
+                if (player.ycor < size+3) {
+                    player.ycor+=1;  // Move down
+                    // mvprintw(0, 0, "Moved DOWN");  // Debug message
+                }
+                break;
+
+            case KEY_LEFT:
+                if (player.xcor > 28) {
+                    player.xcor-=3;  // Move left
+                    // mvprintw(0, 0, "Moved LEFT");  // Debug message
+                }
+                break;
+
+            case KEY_RIGHT:
+                if (player.xcor < (size*3)+19) {
+                    player.xcor+=3;  // Move right
+                    // mvprintw(0, 0, "Moved RIGHT");  // Debug message
+                }
+                break;
+
+            case 'q':  // Exit loop if 'q' is pressed
+                mvprintw(0, 0, "Exiting");
+                return;
         }
+
+        // Reprint the player at the new position
+        mvprintw(player.ycor, player.xcor, "%c", player.value);
+        // Add debug information to ensure input is being captured
+        // mvprintw(1, 0, "X: %d, Y: %d", player.xcor, player.ycor); 
+
+        // Refresh the screen after every move
+        refresh();
+
+        // Delay to make movement visible, so it’s not too fast
+        napms(100);  // 100 milliseconds delay to slow down movement
+    }
+
+}
+   
+        void clearprev(){
+            
+            Node2pointers* temp = grid.head;
+            for(int i=0 ; i<size && temp != NULL ; i++){
+                Node* temp2 = (temp->list).head; 
+                for(int j=0 ; j<size ; j++){
+                    if(((player.xcor == (temp2->c).xcor )&& (player.ycor == (temp2->c).ycor))){
+                        
+                    }
+                    temp2 = temp2->next;
+                }
+                temp = temp->next;
+                cout<<endl;
+            }
+            // return li;
+        }
+
 
 };
 
