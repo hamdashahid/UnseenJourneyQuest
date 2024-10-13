@@ -93,6 +93,7 @@ struct Node2pointers{
     Node2pointers* next;
     Node2pointers* prev;
     List list;
+    // entity coins;
 
     // Node2pointers(List l ){
     //     list = l;
@@ -102,8 +103,15 @@ struct Node2pointers{
     //     prev = NULL;
     // }
 
-    Node2pointers(int x = 0, int y = 0, Node2pointers* n = nullptr, Node2pointers* p = nullptr)
-        : c{x, y}, next(n), prev(p), list() {} // Initialize list to empty
+    Node2pointers(int x = 0, int y = 0, Node2pointers* n = nullptr, Node2pointers* p = nullptr){
+        c.xcor = x;
+        c.ycor = y;
+        next = n;
+        prev = p;
+        list = List();
+        // coins = entity();
+    }
+        // : c{x, y}, next(n), prev(p), list() {} // Initialize list to empty
 
     // void setHead(List l){
     //     list = l;
@@ -287,11 +295,16 @@ class GAME{
     public:
         int size;
         int moves;
+        int Totalmoves;
         int undo;
+        int Totalundo;
         int score;
         int distance;
         int disDoor;
         bool keystatus;
+        bool doorstatus;
+        bool loss ;
+        bool win ;
         entity player;
         entity key;
         entity bomb;
@@ -300,6 +313,7 @@ class GAME{
         entity coins2;
         entity coins3;
         List2pointers grid;
+        List2pointers CoinCollection;
         Stack Rec_moves;
 
         GAME(int s = 0 , int u=0 ,int m = 0){
@@ -307,6 +321,8 @@ class GAME{
             undo = u;
             score =0;
             keystatus = false;
+            win = false;
+            loss = false;
             disDoor = 0;
             player = entity(34,17,'P');
             key = entity(43,7,'K');
@@ -319,12 +335,36 @@ class GAME{
             distance = calculateDistance('k');
             moves =calcMoves()+m;
             Rec_moves = Stack();
+            doorstatus = false;
+            Totalmoves = moves;
+            Totalundo = undo;
         }
 
         void Display(){
 
             initscr();
-        
+            // MenuScreen();
+
+            keypad(stdscr, TRUE);
+            cbreak();
+            noecho();
+            // nodelay(stdscr, TRUE);  
+            mvprintw(5,50,"MENU SCREEN");
+
+            while (true){
+                int ch = getch();
+
+                if(ch == KEY_UP){
+                    // GameScreen();
+                    break;
+                }
+
+            }
+            
+            refresh();
+            // GAME SCREEN
+            mvprintw(5,50,"                ");
+            refresh();
             mvprintw(0,55,"Mode : EASY");
             mvprintw(1,10,"Remaining Moves: ");
             mvprintw(1,28,"%d",moves);
@@ -345,6 +385,16 @@ class GAME{
 
             getch();
             endwin();
+        }
+
+        void MenuScreen(){
+            
+
+
+        }
+
+        void GameScreen(){
+            
         }
 
         void displayGrid(){
@@ -509,10 +559,22 @@ class GAME{
                         mvprintw(1,90,"FURTHER AWAY");
                     }
                 }
+                if(i%5000000 == 0){
+                    Coins();
+                }
+                if(player.xcor == door.xcor && player.ycor == door.ycor && keystatus == true){
+                    doorstatus = true;
+                    // ReachedDoor();
+                }
+                CoinFound();
+                if(GameOver() == true){
+                    return;
+                }
+
                 refresh();
             }
 
-    }
+        }
 
         bool UndoMove(){
             if(Rec_moves.isEmpty() ){
@@ -628,6 +690,64 @@ class GAME{
             mvprintw(coins1.ycor,coins1.xcor,"C");
             mvprintw(coins2.ycor,coins2.xcor,"C");
             mvprintw(coins3.ycor,coins3.xcor,"C");
+        }
+
+        void CoinFound(){
+            if(player.xcor == coins1.xcor && player.ycor == coins1.ycor){
+                mvprintw(coins1.ycor,coins1.xcor,".");
+                score+=2;
+                undo++;
+                coins1.xcor =1000;
+                coins1.ycor = 1000;
+                Node2pointers* n = new Node2pointers(coins1.xcor , coins1.ycor);
+                CoinCollection.append(n);
+            }
+            if(player.xcor == coins2.xcor && player.ycor == coins2.ycor){
+                mvprintw(coins2.ycor,coins2.xcor,".");
+                score+=2;
+                undo++;
+                coins2.xcor =1000;
+                coins2.ycor = 1000;
+                Node2pointers* n = new Node2pointers(coins2.xcor , coins2.ycor);
+                CoinCollection.append(n);
+            }
+            if(player.xcor == coins3.xcor && player.ycor == coins3.ycor){
+                mvprintw(coins3.ycor,coins3.xcor,".");
+                score+=2;
+                undo++;
+                coins3.xcor =1000;
+                coins3.ycor = 1000;
+                Node2pointers* n = new Node2pointers(coins3.xcor , coins3.ycor);
+                CoinCollection.append(n);
+            }
+            mvprintw(2,18,"     ");
+            mvprintw(2,18,"%d" , score);
+            mvprintw(1,58,"       ");
+            mvprintw(1,58,"%d",undo);                                      
+
+        }
+
+        bool GameOver(){
+           
+            if (player.xcor == bomb.xcor && player.ycor == bomb.ycor){
+                loss = true;
+            }
+            if(moves == 0 && doorstatus == false){
+                loss = true;
+            }
+            if(moves>0 && doorstatus == true){
+                win = true;
+            }
+            if (win == false && loss == false){
+                return false;
+            }
+
+            if(win == true){
+                score+=(Totalmoves - moves);
+            }
+            
+            return true;
+            
         }
 
 };
