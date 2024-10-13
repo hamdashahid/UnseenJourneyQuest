@@ -289,6 +289,8 @@ class GAME{
         int undo;
         int score;
         int distance;
+        int disDoor;
+        bool keystatus;
         entity player;
         entity key;
         entity bomb;
@@ -297,18 +299,20 @@ class GAME{
         List2pointers grid;
         Stack Rec_moves;
 
-        GAME(int s = 0 , int m =0 , int u=0 , int sc=0){
+        GAME(int s = 0 , int u=0 ){
             size = s;
-            undo = 10;
-            score =sc;
+            undo = u;
+            score =0;
+            keystatus = false;
+            disDoor = 0;
             player = entity(34,17,'P');
             key = entity(43,7,'K');
             bomb = entity(28,14,'B');
             door = entity(46,6,'D');
             coins = entity(64,18,'C');
             grid = List2pointers();
-            distance = calculateDistance();
-            moves =distance;
+            distance = calculateDistance('k');
+            moves =calcMoves();
             Rec_moves = Stack();
         }
 
@@ -327,6 +331,8 @@ class GAME{
             mvprintw(2,30,"Key Status: ");
             mvprintw(2,45,"False ");
             mvprintw(3,10,"Next drop in line:  ");
+            mvprintw(3,80,"Press {U or u} to UNDO the move ");
+            mvprintw(4,80,"Press {esc} to EXIT the game ");
             displayGrid();
             placements();
             movement();
@@ -376,11 +382,10 @@ class GAME{
         }
 
         void placements(){
-            // player.value = 'P';
             mvprintw(player.ycor,player.xcor,"%c",(player.value));
             mvprintw(key.ycor,key.xcor,"%c",(key.value));
             mvprintw(bomb.ycor,bomb.xcor,"%c",(bomb.value));
-            // mvprintw(door.ycor,door.xcor,"%c",(door.value));
+            mvprintw(door.ycor,door.xcor,"%c",(door.value));
             mvprintw(coins.ycor,coins.xcor,"%c",(coins.value));
         }
 
@@ -390,8 +395,10 @@ class GAME{
             noecho();
             nodelay(stdscr, TRUE);  
 
+            bool keyfound = false;
+            int doordistance=0;
             int ch=0;
-            int d=0;
+            int d=distance;
             int prev=0;
             for (int i=0;true;i++) {
                 ch = getch();
@@ -406,6 +413,8 @@ class GAME{
                                 stNode* n = new stNode(KEY_UP);
                                 Rec_moves.push(n);
                                 moves--;
+                                distance = d;
+                                disDoor = doordistance;
                             }
                         }
 
@@ -419,7 +428,8 @@ class GAME{
                                 stNode* n = new stNode(KEY_DOWN);
                                 Rec_moves.push(n);
                                 moves--;
-
+                                distance = d;
+                                disDoor = doordistance;
                             }
                         }
                         break;
@@ -432,6 +442,8 @@ class GAME{
                                stNode* n = new stNode(KEY_LEFT);
                                 Rec_moves.push(n);
                                 moves--;
+                                distance = d;
+                                disDoor = doordistance;
                             }
                         }
                         
@@ -446,36 +458,55 @@ class GAME{
                                 stNode* n = new stNode(KEY_RIGHT);
                                 Rec_moves.push(n);
                                 moves--;
+                                distance = d;
+                                disDoor = doordistance;
                             }
                         }
                         break;
 
-                    case 'q': 
-                    case 'Q':
-                        mvprintw(0, 0, "Exiting");
-                        return;
                     case 'U':
                     case 'u':
                         UndoMove();
+                        distance = d;
                         break;    
+                    case 27: 
+                        mvprintw(0, 0, "Exiting");
+                        return;
                 }
-                d = calculateDistance();
+                
+                if(player.xcor == key.xcor && player.ycor == key.ycor){
+                    keystatus =true;
+                    mvprintw(2,45,"True ");
+                    keyfound = true;
+                    disDoor = calculateDistance('d');
+                    doordistance = disDoor;
+                }
                 mvprintw(player.ycor, player.xcor, "%c", player.value);
                 mvprintw(1,28,"    ");
                 mvprintw(1,28,"%d",moves);
-
-                if(distance > d){
-                    mvprintw(1,90,"                 ");
-                    mvprintw(1,90,"GETTING CLOSER");
+                if(keystatus == false){
+                    d = calculateDistance('k');
+                    if(distance > d){
+                        mvprintw(1,90,"                 ");
+                        mvprintw(1,90,"GETTING CLOSER");
+                    }else{
+                        mvprintw(1,90,"                  ");
+                        mvprintw(1,90,"FURTHER AWAY");
+                    }
                 }else{
-                    mvprintw(1,90,"                  ");
-                    mvprintw(1,90,"FURTHER AWAY");
+                    doordistance = calculateDistance('d');
+                     if(disDoor > doordistance){
+                        mvprintw(1,90,"                 ");
+                        mvprintw(1,90,"GETTING CLOSER");
+                    }else{
+                        mvprintw(1,90,"                  ");
+                        mvprintw(1,90,"FURTHER AWAY");
+                    }
                 }
                 refresh();
             }
 
     }
-   
 
         bool UndoMove(){
             if(Rec_moves.isEmpty() ){
@@ -510,7 +541,26 @@ class GAME{
             return true;
         }
 
-        int calculateDistance(){
+        int calculateDistance(char k){
+            int x1 = 0  , y1=0;
+            if(k == 'k'){
+                x1 = player.xcor - key.xcor;
+                y1 = player.ycor - key.ycor;
+            
+                x1 = x1<0? -1*x1 : x1;
+                y1 = y1<0? -1*y1 : y1;
+            }else if(k == 'd'){
+                x1 = player.xcor - door.xcor;
+                y1 = player.ycor - door.ycor;
+            
+                x1 = x1<0? -1*x1 : x1;
+                y1 = y1<0? -1*y1 : y1;
+            }
+
+            return x1+y1;
+        }
+
+        int calcMoves(){
             int x1 = player.xcor - key.xcor;
             int y1 = player.ycor - key.ycor;
             int x2 = player.xcor - door.xcor;
@@ -527,11 +577,10 @@ class GAME{
 
             return x1+x2+x3+y1+y2+y3;
         }
-
 };
 
 int main(){
-    GAME e(20);
+    GAME e(20,10);
 
     e.Display();
 
