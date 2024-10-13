@@ -367,9 +367,26 @@ class GAME{
             while (true){
                 int ch = getch();
 
-                if(ch == KEY_UP){
+                if(ch == 49){
+                    size = 10;
+                    undo = 6;
+                    moves =calcMoves()+6;
                     GameScreen();
                     break;
+                }else if(ch == 50){
+                    size = 15;
+                    undo = 4;
+                    moves =calcMoves()+2;
+                    GameScreen();
+                    break;
+                }else if(ch == 51){
+                    size = 20;
+                    undo = 1;
+                    moves =calcMoves()+6;
+                    GameScreen();
+                    break;
+                }else if(ch == 27){
+                    return;
                 }
 
             }
@@ -404,6 +421,11 @@ class GAME{
         void GameOverScreen(){
             clear();
             refresh();
+            if(win == true){
+                mvprintw(3,30,"<=========== :) YOU WON THE GAME !!!!! :)==============>");
+            }else {
+                mvprintw(3,30,"<=========== :( YOU LOST THE GAME !!!!! :( ==============>");
+            }
             mvprintw(5,50,"GAME OVER");
             mvprintw(6,50,"COINS COLLECTED AT : ");
             Node2pointers* temp = CoinCollection.head;
@@ -417,9 +439,27 @@ class GAME{
                 x=50;
                 temp = temp->next;
             }
+            mvprintw(y,50,"Initial Key Position : ");
+            mvprintw(y,90,"%d",key.xcor);
+            mvprintw(y,95,"%d",key.ycor);
+
+            mvprintw(y+1,50,"Initial Door Position");
+            mvprintw(y+1,90,"%d",door.xcor);
+            mvprintw(y+1,95,"%d",door.ycor);
+
+            mvprintw(y+2,50,"LEFT OVER MOVES : ");
+            mvprintw(y+2,90,"%d",moves);
+
+            mvprintw(y+3,50,"LEFT OVER UNDOS : ");
+            mvprintw(y+3,90,"%d",undo);
+
             while(true){
-                getch();
+                int ch = getch();
+                if(ch == 27){
+                    return;
+                }
             }
+
         }
 
         void displayGrid(){
@@ -794,7 +834,7 @@ class GAME{
             }
 
             if(win == true){
-                score+=(Totalmoves - moves);
+                score+=moves;
             }
             
             return true;
@@ -804,7 +844,7 @@ class GAME{
 };
 
 int main(){
-    GAME e(20,10);
+    GAME e;
 
     e.Display();
 
