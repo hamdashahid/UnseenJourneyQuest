@@ -176,9 +176,7 @@ class List2pointers{
 };
 
 List2pointers createListzeros(int size) {
-    // Step 1: Create a list with nodes initialized to (0, 0)
-    
-    // Step 2: Create a List2pointers and append the list to it
+
     List2pointers l1;
     for (int i = 0; i < size; i++) {
         List l;
@@ -193,16 +191,13 @@ List2pointers createListzeros(int size) {
         l1.appendList(l);
     }
 
-    // Step 3: Traverse and set the left and right pointers of the grid
     Node2pointers* temp = l1.head;
     Node* prevtrack = nullptr;
     Node* forwtrack = nullptr;
 
-    // std::cout << "helllooo\n\n";  // Debugging message
     for (int i = 0; i < size && temp != nullptr; i++) {
         Node* temp2 = (temp->list).head;
 
-        // Set prevtrack and forwtrack based on the position in the grid
         if (i > 0 && i < size - 1) {
             prevtrack = (temp->prev != nullptr) ? (temp->prev->list).head : nullptr;
             forwtrack = (temp->next != nullptr) ? (temp->next->list).head : nullptr;
@@ -214,14 +209,12 @@ List2pointers createListzeros(int size) {
 
         for (int j = 0; j < size && temp2 != nullptr; j++) {
             if (i == 0) {
-                // First row: no left connections
                 temp2->left = nullptr;
                 temp2->right = forwtrack;
                 if (forwtrack != nullptr) {
                     forwtrack = forwtrack->next;
                 }
             } else if (i < size - 1) {
-                // Middle rows: connect to previous and next rows
                 temp2->left = prevtrack;
                 temp2->right = forwtrack;
                 if (prevtrack != nullptr) {
@@ -231,20 +224,15 @@ List2pointers createListzeros(int size) {
                     forwtrack = forwtrack->next;
                 }
             } else if (i == size - 1) {
-                // Last row: no right connections
                 temp2->right = nullptr;
                 temp2->left = prevtrack;
                 if (prevtrack != nullptr) {
                     prevtrack = prevtrack->next;
                 }
             }
-
-            // Assign data and move to the next node in the row
             temp2->data = '.';
             temp2 = temp2->next;
         }
-
-        // Move to the next row in the grid
         temp = temp->next;
     }
 
@@ -257,6 +245,7 @@ class Easy{
         int moves;
         int undo;
         int score;
+        int distance;
         entity player;
         entity key;
         entity bomb;
@@ -266,7 +255,6 @@ class Easy{
 
         Easy(int s = 0 , int m =0 , int u=0 , int sc=0){
             size = s;
-            moves =m;
             undo = u;
             score =sc;
             player = entity(34,17,'P');
@@ -275,6 +263,8 @@ class Easy{
             door = entity(46,6,'D');
             coins = entity(64,18,'C');
             grid = List2pointers();
+            distance = calculateDistance();
+            moves =distance;
         }
 
         void Display(){
@@ -286,12 +276,12 @@ class Easy{
             mvprintw(1,28,"%d",moves);
             mvprintw(1,40,"Remaining Undos: ");
             mvprintw(1,58,"%d",undo);
+            mvprintw(1,80,"HINT: ");
             mvprintw(2,10,"Score: ");
             mvprintw(2,18,"%d" , score);
             mvprintw(2,30,"Key Status: ");
             mvprintw(2,45,"False ");
             mvprintw(3,10,"Next drop in line:  ");
-
             displayGrid();
             placements();
             movement();
@@ -345,71 +335,88 @@ class Easy{
             mvprintw(player.ycor,player.xcor,"%c",(player.value));
             mvprintw(key.ycor,key.xcor,"%c",(key.value));
             mvprintw(bomb.ycor,bomb.xcor,"%c",(bomb.value));
-            mvprintw(door.ycor,door.xcor,"%c",(door.value));
+            // mvprintw(door.ycor,door.xcor,"%c",(door.value));
             mvprintw(coins.ycor,coins.xcor,"%c",(coins.value));
         }
 
         void movement() {
-    // Enable keyboard input for special keys like arrow keys
-    keypad(stdscr, TRUE);
-    // Disable line buffering and allow non-blocking input
-    cbreak();
-    noecho();
-    nodelay(stdscr, TRUE);  // Non-blocking getch()
+            keypad(stdscr, TRUE);
+            cbreak();
+            noecho();
+            nodelay(stdscr, TRUE);  
 
-    int ch;
-    
-    while (true) {
-        // Get the input key
-        ch = getch();
-        mvprintw(player.ycor,player.xcor,".");
-        switch (ch) {
-            case KEY_UP:
-                if (player.ycor>6) {
-                    player.ycor-=1;  // Move up
-                    // mvprintw(0, 0, "Moved UP");  // Debug message
+            int ch=0;
+            int d=0;
+            int prev=0;
+            for (int i=0;true;i++) {
+                ch = getch();
+                mvprintw(player.ycor,player.xcor,".");
+                switch (ch) {
+                    case KEY_UP:
+                        if (player.ycor>6 ) {
+                            if((i>0 && prev!= KEY_DOWN)||i==0){   
+                                player.ycor-=1;  
+                                prev = KEY_UP;
+                                moves--;
+                            }
+                        }
+
+                        break;
+
+                    case KEY_DOWN:
+                        if (player.ycor < size+3 ) {
+                            if((i>0 && prev!= KEY_UP)||i==0){
+                                player.ycor+=1; 
+                                prev = KEY_DOWN;  
+                                moves--;
+
+                            }
+                        }
+                        break;
+
+                    case KEY_LEFT:
+                        if (player.xcor > 28) {
+                            if((i>0 && prev!= KEY_RIGHT)||i==0){
+                               player.xcor-=3; 
+                               prev = KEY_LEFT; 
+                                moves--;
+                            }
+                        }
+                        
+                        
+                        break;
+
+                    case KEY_RIGHT:
+                        if (player.xcor < (size*3)+19) {
+                            if((i>0 && prev!= KEY_LEFT)||i==0){
+                                player.xcor+=3;  
+                                prev = KEY_RIGHT;
+                                moves--;
+                            }
+                        }
+                        break;
+
+                    case 'q': 
+                    case 'Q':
+                        mvprintw(0, 0, "Exiting");
+                        return;
                 }
-                break;
+                d = calculateDistance();
+                mvprintw(player.ycor, player.xcor, "%c", player.value);
+                mvprintw(1,28,"    ");
+                mvprintw(1,28,"%d",moves);
 
-            case KEY_DOWN:
-                if (player.ycor < size+3) {
-                    player.ycor+=1;  // Move down
-                    // mvprintw(0, 0, "Moved DOWN");  // Debug message
+                if(distance > d){
+                    mvprintw(1,90,"                 ");
+                    mvprintw(1,90,"GETTING CLOSER");
+                }else{
+                    mvprintw(1,90,"                  ");
+                    mvprintw(1,90,"FURTHER AWAY");
                 }
-                break;
+                refresh();
+            }
 
-            case KEY_LEFT:
-                if (player.xcor > 28) {
-                    player.xcor-=3;  // Move left
-                    // mvprintw(0, 0, "Moved LEFT");  // Debug message
-                }
-                break;
-
-            case KEY_RIGHT:
-                if (player.xcor < (size*3)+19) {
-                    player.xcor+=3;  // Move right
-                    // mvprintw(0, 0, "Moved RIGHT");  // Debug message
-                }
-                break;
-
-            case 'q':  // Exit loop if 'q' is pressed
-                mvprintw(0, 0, "Exiting");
-                return;
-        }
-
-        // Reprint the player at the new position
-        mvprintw(player.ycor, player.xcor, "%c", player.value);
-        // Add debug information to ensure input is being captured
-        // mvprintw(1, 0, "X: %d, Y: %d", player.xcor, player.ycor); 
-
-        // Refresh the screen after every move
-        refresh();
-
-        // Delay to make movement visible, so it’s not too fast
-        napms(100);  // 100 milliseconds delay to slow down movement
     }
-
-}
    
         void clearprev(){
             
@@ -428,6 +435,20 @@ class Easy{
             // return li;
         }
 
+        int calculateDistance(){
+            int x = player.xcor - key.xcor;
+            int y = player.ycor - key.ycor;
+
+            if(x<0){
+                x = -1*x;
+            }
+
+            if (y<0){
+                y= -1*y;
+            }
+
+            return x+y;
+        }
 
 };
 
