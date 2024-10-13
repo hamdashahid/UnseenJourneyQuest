@@ -239,7 +239,50 @@ List2pointers createListzeros(int size) {
     return l1;
 }
 
-class Easy{ 
+struct stNode{
+    stNode* next;
+    int move;
+
+    stNode(int m = 0 , stNode* n = NULL){
+        move = m;
+        next = n;
+    }
+};
+
+class Stack{
+    public:
+
+        stNode* top;
+
+        Stack(stNode* t = NULL){
+            top = t;
+        }
+
+        void push(stNode* add){
+            if(isEmpty()){
+                top = add;
+            }else{
+                add->next = top;
+                top = add;
+            }
+        }
+
+        int pop(){
+            stNode* temp = top;
+            top = top->next;
+            int m = temp->move;
+            delete temp;
+            return m;
+        }
+
+        bool isEmpty(){
+            return top==NULL;
+        }
+
+};
+
+
+class GAME{ 
     public:
         int size;
         int moves;
@@ -252,10 +295,11 @@ class Easy{
         entity door;
         entity coins;
         List2pointers grid;
+        Stack Rec_moves;
 
-        Easy(int s = 0 , int m =0 , int u=0 , int sc=0){
+        GAME(int s = 0 , int m =0 , int u=0 , int sc=0){
             size = s;
-            undo = u;
+            undo = 10;
             score =sc;
             player = entity(34,17,'P');
             key = entity(43,7,'K');
@@ -265,6 +309,7 @@ class Easy{
             grid = List2pointers();
             distance = calculateDistance();
             moves =distance;
+            Rec_moves = Stack();
         }
 
         void Display(){
@@ -350,6 +395,7 @@ class Easy{
             int prev=0;
             for (int i=0;true;i++) {
                 ch = getch();
+                
                 mvprintw(player.ycor,player.xcor,".");
                 switch (ch) {
                     case KEY_UP:
@@ -357,6 +403,8 @@ class Easy{
                             if((i>0 && prev!= KEY_DOWN)||i==0){   
                                 player.ycor-=1;  
                                 prev = KEY_UP;
+                                stNode* n = new stNode(KEY_UP);
+                                Rec_moves.push(n);
                                 moves--;
                             }
                         }
@@ -368,6 +416,8 @@ class Easy{
                             if((i>0 && prev!= KEY_UP)||i==0){
                                 player.ycor+=1; 
                                 prev = KEY_DOWN;  
+                                stNode* n = new stNode(KEY_DOWN);
+                                Rec_moves.push(n);
                                 moves--;
 
                             }
@@ -379,6 +429,8 @@ class Easy{
                             if((i>0 && prev!= KEY_RIGHT)||i==0){
                                player.xcor-=3; 
                                prev = KEY_LEFT; 
+                               stNode* n = new stNode(KEY_LEFT);
+                                Rec_moves.push(n);
                                 moves--;
                             }
                         }
@@ -391,6 +443,8 @@ class Easy{
                             if((i>0 && prev!= KEY_LEFT)||i==0){
                                 player.xcor+=3;  
                                 prev = KEY_RIGHT;
+                                stNode* n = new stNode(KEY_RIGHT);
+                                Rec_moves.push(n);
                                 moves--;
                             }
                         }
@@ -400,6 +454,10 @@ class Easy{
                     case 'Q':
                         mvprintw(0, 0, "Exiting");
                         return;
+                    case 'U':
+                    case 'u':
+                        UndoMove();
+                        break;    
                 }
                 d = calculateDistance();
                 mvprintw(player.ycor, player.xcor, "%c", player.value);
@@ -418,42 +476,62 @@ class Easy{
 
     }
    
-        void clearprev(){
-            
-            Node2pointers* temp = grid.head;
-            for(int i=0 ; i<size && temp != NULL ; i++){
-                Node* temp2 = (temp->list).head; 
-                for(int j=0 ; j<size ; j++){
-                    if(((player.xcor == (temp2->c).xcor )&& (player.ycor == (temp2->c).ycor))){
-                        
-                    }
-                    temp2 = temp2->next;
-                }
-                temp = temp->next;
-                cout<<endl;
+
+        bool UndoMove(){
+            if(Rec_moves.isEmpty() ){
+                return false;
             }
-            // return li;
+            switch(Rec_moves.pop()){
+                case KEY_UP:
+                    if (player.ycor < size+3 ) {
+                        player.ycor+=1; 
+                    }
+                    break;
+                case KEY_DOWN:
+                    if (player.ycor>6 ) {
+                        player.ycor-=1;  
+                    }
+                    break;
+                case KEY_LEFT:
+                    if (player.xcor < (size*3)+19) {
+                        player.xcor+=3;  
+                    }
+                    break;
+                case KEY_RIGHT:
+                    if (player.xcor > 28) {
+                        player.xcor-=3; 
+                    }
+                    break;            
+            }
+            undo--;
+            mvprintw(1,58,"       ");
+            mvprintw(1,58,"%d",undo);
+            refresh();
+            return true;
         }
 
         int calculateDistance(){
-            int x = player.xcor - key.xcor;
-            int y = player.ycor - key.ycor;
+            int x1 = player.xcor - key.xcor;
+            int y1 = player.ycor - key.ycor;
+            int x2 = player.xcor - door.xcor;
+            int y2 = player.ycor - door.ycor;
+            int x3 = key.xcor - door.xcor;
+            int y3 = key.ycor - key.ycor;
 
-            if(x<0){
-                x = -1*x;
-            }
+            x1 = x1<0? -1*x1 : x1;
+            x2 = x2<0? -1*x2 : x2;
+            x3 = x3<0? -1*x3 : x3;
+            y1 = y1<0? -1*y1 : y1;
+            y2 = y2<0? -1*y2 : y2;
+            y3 = y3<0? -1*y3 : y3;
 
-            if (y<0){
-                y= -1*y;
-            }
-
-            return x+y;
+            return x1+x2+x3+y1+y2+y3;
         }
 
 };
 
 int main(){
-    Easy e(20);
+    GAME e(20);
 
     e.Display();
 
