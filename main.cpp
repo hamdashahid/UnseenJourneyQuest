@@ -343,27 +343,42 @@ class GAME{
         void Display(){
 
             initscr();
-            // MenuScreen();
+            MenuScreen();
+            
+            refresh();
+            // GAME SCREEN
 
+            GameOverScreen();
+            getch();
+            endwin();
+        }
+
+        void MenuScreen(){
+            
             keypad(stdscr, TRUE);
             cbreak();
             noecho();
             // nodelay(stdscr, TRUE);  
             mvprintw(5,50,"MENU SCREEN");
+            mvprintw(10,50,"1. EASY");
+            mvprintw(12,50,"2. MEDIUM");
+            mvprintw(14,50,"3. DIFFICULT");
 
             while (true){
                 int ch = getch();
 
                 if(ch == KEY_UP){
-                    // GameScreen();
+                    GameScreen();
                     break;
                 }
 
             }
-            
-            refresh();
-            // GAME SCREEN
-            mvprintw(5,50,"                ");
+
+        }
+
+        void GameScreen(){
+            // mvprintw(5,50,"                ");
+            clear();
             refresh();
             mvprintw(0,55,"Mode : EASY");
             mvprintw(1,10,"Remaining Moves: ");
@@ -382,19 +397,29 @@ class GAME{
             placements();
             Coins();
             movement();
-
-            getch();
-            endwin();
-        }
-
-        void MenuScreen(){
-            
-
+            // GameOverScreen();
 
         }
 
-        void GameScreen(){
-            
+        void GameOverScreen(){
+            clear();
+            refresh();
+            mvprintw(5,50,"GAME OVER");
+            mvprintw(6,50,"COINS COLLECTED AT : ");
+            Node2pointers* temp = CoinCollection.head;
+            int x = 50;
+            int y = 7;
+            while(temp!=NULL){
+                mvprintw(y,x ,"%d" , (temp->c).xcor );
+                x+=5;
+                mvprintw(y,x ,"%d" , (temp->c).ycor );
+                y++;
+                x=50;
+                temp = temp->next;
+            }
+            while(true){
+                getch();
+            }
         }
 
         void displayGrid(){
@@ -406,7 +431,7 @@ class GAME{
                 Node* temp2 = (temp->list).head; 
                 for(int j=0 ; j<size ; j++){
                     mvprintw((temp2->c).ycor , (temp2->c).xcor ,"%c", (temp2->data) );
-                    cout<<" x : "<<(temp2->c).xcor <<" y : "<<(temp2->c).ycor;
+                    // cout<<" x : "<<(temp2->c).xcor <<" y : "<<(temp2->c).ycor;
                     temp2 = temp2->next;
                 }
                 cout<<endl;
@@ -432,12 +457,38 @@ class GAME{
                 }
                 temp = temp->next;
                 x+=3;
-                cout<<endl;
+                // cout<<endl;
             }
             return li;
         }
 
         void placements(){
+            player.xcor = 28 + ((rand() % 17)*3) ;
+            player.ycor = 6 + (rand() % 18);
+            while(true){
+                key.xcor = 28 + ((rand() % 17)*3) ;
+                key.ycor = 6 + (rand() % 18);
+                if(key.xcor != player.xcor && key.ycor != player.ycor)  {
+                   break;
+                }
+            }
+            while(true){
+                bomb.xcor = 28 + ((rand() % 17)*3) ;
+                bomb.ycor = 6 + (rand() % 18);
+                if((bomb.xcor != player.xcor && bomb.ycor != player.ycor) &&
+                    (bomb.xcor != key.xcor && bomb.ycor != key.ycor))  {
+                   break;
+                }
+            }
+            while(true){
+                door.xcor = 28 + ((rand() % 17)*3) ;
+                door.ycor = 6 + (rand() % 18);
+                if((door.xcor != player.xcor && door.ycor != player.ycor) &&
+                    (door.xcor != key.xcor && door.ycor != key.ycor)&&
+                    (door.xcor != bomb.xcor && door.ycor != bomb.ycor))  {
+                   break;
+                }
+            }
             mvprintw(player.ycor,player.xcor,"%c",(player.value));
             mvprintw(key.ycor,key.xcor,"%c",(key.value));
             mvprintw(bomb.ycor,bomb.xcor,"%c",(bomb.value));
@@ -697,28 +748,28 @@ class GAME{
                 mvprintw(coins1.ycor,coins1.xcor,".");
                 score+=2;
                 undo++;
-                coins1.xcor =1000;
-                coins1.ycor = 1000;
                 Node2pointers* n = new Node2pointers(coins1.xcor , coins1.ycor);
                 CoinCollection.append(n);
+                coins1.xcor =1000;
+                coins1.ycor = 1000;
             }
             if(player.xcor == coins2.xcor && player.ycor == coins2.ycor){
                 mvprintw(coins2.ycor,coins2.xcor,".");
                 score+=2;
                 undo++;
-                coins2.xcor =1000;
-                coins2.ycor = 1000;
                 Node2pointers* n = new Node2pointers(coins2.xcor , coins2.ycor);
                 CoinCollection.append(n);
+                coins2.xcor =1000;
+                coins2.ycor = 1000;
             }
             if(player.xcor == coins3.xcor && player.ycor == coins3.ycor){
                 mvprintw(coins3.ycor,coins3.xcor,".");
                 score+=2;
                 undo++;
-                coins3.xcor =1000;
-                coins3.ycor = 1000;
                 Node2pointers* n = new Node2pointers(coins3.xcor , coins3.ycor);
                 CoinCollection.append(n);
+                coins3.xcor =1000;
+                coins3.ycor = 1000;
             }
             mvprintw(2,18,"     ");
             mvprintw(2,18,"%d" , score);
