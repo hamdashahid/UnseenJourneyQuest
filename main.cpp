@@ -1,4 +1,5 @@
 #include<iostream>
+#include<ctime>
 #include<ncurses.h>
 using namespace std;
 
@@ -295,11 +296,13 @@ class GAME{
         entity key;
         entity bomb;
         entity door;
-        entity coins;
+        entity coins1;
+        entity coins2;
+        entity coins3;
         List2pointers grid;
         Stack Rec_moves;
 
-        GAME(int s = 0 , int u=0 ){
+        GAME(int s = 0 , int u=0 ,int m = 0){
             size = s;
             undo = u;
             score =0;
@@ -309,10 +312,12 @@ class GAME{
             key = entity(43,7,'K');
             bomb = entity(28,14,'B');
             door = entity(46,6,'D');
-            coins = entity(64,18,'C');
+            coins1 = entity(64,18,'C');
+            coins2 = entity(64,18,'C');
+            coins3 = entity(64,18,'C');
             grid = List2pointers();
             distance = calculateDistance('k');
-            moves =calcMoves();
+            moves =calcMoves()+m;
             Rec_moves = Stack();
         }
 
@@ -335,6 +340,7 @@ class GAME{
             mvprintw(4,80,"Press {esc} to EXIT the game ");
             displayGrid();
             placements();
+            Coins();
             movement();
 
             getch();
@@ -386,7 +392,7 @@ class GAME{
             mvprintw(key.ycor,key.xcor,"%c",(key.value));
             mvprintw(bomb.ycor,bomb.xcor,"%c",(bomb.value));
             mvprintw(door.ycor,door.xcor,"%c",(door.value));
-            mvprintw(coins.ycor,coins.xcor,"%c",(coins.value));
+            mvprintw(coins1.ycor,coins1.xcor,"%c",(coins1.value));
         }
 
         void movement() {
@@ -577,6 +583,53 @@ class GAME{
 
             return x1+x2+x3+y1+y2+y3;
         }
+
+        void Coins(){
+            mvprintw(coins1.ycor,coins1.xcor,".");
+            mvprintw(coins2.ycor,coins2.xcor,".");
+            mvprintw(coins3.ycor,coins3.xcor,".");
+            while(true){
+                coins1.xcor = 28 + ((rand() % 17)*3) ;
+                coins1.ycor = 6 + (rand() % 18);
+                if((coins1.xcor != player.xcor && coins1.ycor != player.ycor)&&
+                    (coins1.xcor != bomb.xcor && coins1.ycor != bomb.ycor)&&
+                    (coins1.xcor != key.xcor && coins1.ycor != key.ycor) && 
+                    (coins1.xcor != door.xcor && coins1.ycor != door.ycor)){
+                        break;
+                    }
+
+            }
+             while(true){
+                coins2.xcor = 28 + ((rand() % 17)*3) ;
+                coins2.ycor = 6 + (rand() % 18);
+                if((coins2.xcor != player.xcor && coins2.ycor != player.ycor)&&
+                    (coins2.xcor != bomb.xcor && coins2.ycor != bomb.ycor)&&
+                    (coins2.xcor != key.xcor && coins2.ycor != key.ycor) && 
+                    (coins2.xcor != door.xcor && coins2.ycor != door.ycor)&&
+                    (coins2.xcor != coins1.xcor && coins2.ycor != coins1.ycor)){
+                        break;
+                    }
+
+            }
+
+            while(true){
+                coins3.xcor = 28 + ((rand() % 17)*3) ;
+                coins3.ycor = 6 + (rand() % 18);
+                if((coins3.xcor != player.xcor && coins3.ycor != player.ycor)&&
+                    (coins3.xcor != bomb.xcor && coins3.ycor != bomb.ycor)&&
+                    (coins3.xcor != key.xcor && coins3.ycor != key.ycor) && 
+                    (coins3.xcor != door.xcor && coins3.ycor != door.ycor)&&
+                    (coins3.xcor != coins1.xcor && coins3.ycor != coins1.ycor)&&
+                    (coins3.xcor != coins2.xcor && coins3.ycor != coins2.ycor)){
+                        break;
+                    }
+
+            }
+            mvprintw(coins1.ycor,coins1.xcor,"C");
+            mvprintw(coins2.ycor,coins2.xcor,"C");
+            mvprintw(coins3.ycor,coins3.xcor,"C");
+        }
+
 };
 
 int main(){
