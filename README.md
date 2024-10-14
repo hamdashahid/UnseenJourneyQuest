@@ -22,4 +22,6 @@
     To select the mode : Press {1 for EASY MODE}
     To select the mode : Press {2 for MEDIUM MODE}
     To select the mode : Press {3 for DIFFICULT MODE}
+    Use the keyboard arrow keys for moving the player
+    
 
