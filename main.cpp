@@ -413,7 +413,7 @@ class GAME{
             mvprintw(2,18,"%d" , score);
             mvprintw(2,30,"Key Status: ");
             mvprintw(2,45,"False ");
-            mvprintw(3,10,"Next drop in line:  ");
+            // mvprintw(3,10,"Next drop in line:  ");
             mvprintw(3,80,"Press {U or u} to UNDO the move ");
             mvprintw(4,80,"Press {esc} to EXIT the game ");
             displayGrid();
