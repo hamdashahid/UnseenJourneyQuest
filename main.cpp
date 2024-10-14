@@ -324,13 +324,13 @@ class GAME{
             win = false;
             loss = false;
             disDoor = 0;
-            player = entity(34,17,'P');
-            key = entity(43,7,'K');
-            bomb = entity(28,14,'B');
-            door = entity(46,6,'D');
-            coins1 = entity(64,18,'C');
-            coins2 = entity(64,18,'C');
-            coins3 = entity(64,18,'C');
+            player = entity(1000,1000,'P');
+            key = entity(1000,1000,'K');
+            bomb = entity(1200,1200,'B');
+            door = entity(1300,1300,'D');
+            coins1 = entity(1400,1400,'C');
+            coins2 = entity(1500,1500,'C');
+            coins3 = entity(1600,1600,'C');
             grid = List2pointers();
             distance = calculateDistance('k');
             moves =calcMoves()+m;
@@ -359,7 +359,8 @@ class GAME{
             cbreak();
             noecho();
             // nodelay(stdscr, TRUE);  
-            mvprintw(5,50,"MENU SCREEN");
+            mvprintw(3,5,"<====================================== UNSEEN  JOURNEY  QUEST =====================================>");
+            mvprintw(5,35,"<================== MENU ======================>");
             mvprintw(10,50,"1. EASY");
             mvprintw(12,50,"2. MEDIUM");
             mvprintw(14,50,"3. DIFFICULT");
@@ -370,20 +371,17 @@ class GAME{
                 if(ch == 49){
                     size = 10;
                     undo = 6;
-                    moves =calcMoves()+6;
-                    GameScreen();
+                    GameScreen(1);
                     break;
                 }else if(ch == 50){
                     size = 15;
                     undo = 4;
-                    moves =calcMoves()+2;
-                    GameScreen();
+                    GameScreen(2);
                     break;
                 }else if(ch == 51){
                     size = 20;
                     undo = 1;
-                    moves =calcMoves()+6;
-                    GameScreen();
+                    GameScreen(3);
                     break;
                 }else if(ch == 27){
                     return;
@@ -393,7 +391,7 @@ class GAME{
 
         }
 
-        void GameScreen(){
+        void GameScreen(int mode = 0){
             // mvprintw(5,50,"                ");
             clear();
             refresh();
@@ -413,24 +411,42 @@ class GAME{
             displayGrid();
             placements();
             Coins();
-            movement();
+            switch(mode){
+                case 1:
+                    movement(1);
+
+                    break;
+                case 2:
+                    movement(2);
+
+                    break;
+                case 3:
+                    movement(3);
+
+                    break;        
+
+            }
             // GameOverScreen();
 
         }
 
-        void GameOverScreen(){
+        void GameOverScreen(){ 
             clear();
             refresh();
+            mvprintw(3,5,"<====================================== UNSEEN  JOURNEY  QUEST =====================================>");
+
             if(win == true){
-                mvprintw(3,30,"<=========== :) YOU WON THE GAME !!!!! :)==============>");
+                mvprintw(5,30,"<=========== :) YOU WON THE GAME !!!!! :)==============>");
             }else {
-                mvprintw(3,30,"<=========== :( YOU LOST THE GAME !!!!! :( ==============>");
+                mvprintw(5,30,"<=========== :( YOU LOST THE GAME !!!!! :( ==============>");
             }
-            mvprintw(5,50,"GAME OVER");
-            mvprintw(6,50,"COINS COLLECTED AT : ");
+            // mvprintw(5,45,"GAME OVER");
+            mvprintw(8,45,"Score :  ");
+            mvprintw(8,55,"%d",score);
+            mvprintw(10,45,"COINS COLLECTED AT : ");
             Node2pointers* temp = CoinCollection.head;
             int x = 50;
-            int y = 7;
+            int y = 11;
             while(temp!=NULL){
                 mvprintw(y,x ,"%d" , (temp->c).xcor );
                 x+=5;
@@ -439,19 +455,20 @@ class GAME{
                 x=50;
                 temp = temp->next;
             }
-            mvprintw(y,50,"Initial Key Position : ");
-            mvprintw(y,90,"%d",key.xcor);
-            mvprintw(y,95,"%d",key.ycor);
+            y++;
+            mvprintw(y,45,"Initial Key Position : ");
+            mvprintw(y,70,"%d",key.xcor);
+            mvprintw(y,75,"%d",key.ycor);
 
-            mvprintw(y+1,50,"Initial Door Position");
-            mvprintw(y+1,90,"%d",door.xcor);
-            mvprintw(y+1,95,"%d",door.ycor);
+            mvprintw(y+2,45,"Initial Door Position : ");
+            mvprintw(y+2,70,"%d",door.xcor);
+            mvprintw(y+2,75,"%d",door.ycor);
 
-            mvprintw(y+2,50,"LEFT OVER MOVES : ");
-            mvprintw(y+2,90,"%d",moves);
+            mvprintw(y+4,45,"LEFT OVER MOVES : ");
+            mvprintw(y+4,70,"%d",moves);
 
-            mvprintw(y+3,50,"LEFT OVER UNDOS : ");
-            mvprintw(y+3,90,"%d",undo);
+            mvprintw(y+6,45,"LEFT OVER UNDOS : ");
+            mvprintw(y+6,70,"%d",undo);
 
             while(true){
                 int ch = getch();
@@ -493,7 +510,7 @@ class GAME{
                         temp2->data = '#';
                     }
                     temp2 = temp2->next;
-                    y+=1.75;
+                    y+=1;
                 }
                 temp = temp->next;
                 x+=3;
@@ -503,26 +520,26 @@ class GAME{
         }
 
         void placements(){
-            player.xcor = 28 + ((rand() % 17)*3) ;
-            player.ycor = 6 + (rand() % 18);
+            player.xcor = 28 + ((rand() % (size-2)) * 3);
+            player.ycor = 6 + (rand() % (size-2));
             while(true){
-                key.xcor = 28 + ((rand() % 17)*3) ;
-                key.ycor = 6 + (rand() % 18);
+                key.xcor = 28 + ((rand() % size-3)*3) ;
+                key.ycor = 6 + (rand() % size-2);
                 if(key.xcor != player.xcor && key.ycor != player.ycor)  {
                    break;
                 }
             }
             while(true){
-                bomb.xcor = 28 + ((rand() % 17)*3) ;
-                bomb.ycor = 6 + (rand() % 18);
+                bomb.xcor = 28 + ((rand() % (size-2)) * 3);
+                bomb.ycor = 6 + (rand() % (size-2));
                 if((bomb.xcor != player.xcor && bomb.ycor != player.ycor) &&
                     (bomb.xcor != key.xcor && bomb.ycor != key.ycor))  {
                    break;
                 }
             }
             while(true){
-                door.xcor = 28 + ((rand() % 17)*3) ;
-                door.ycor = 6 + (rand() % 18);
+                door.xcor = 28 + ((rand() % (size-2)) * 3);
+                door.ycor = 6 + (rand() % (size-2));
                 if((door.xcor != player.xcor && door.ycor != player.ycor) &&
                     (door.xcor != key.xcor && door.ycor != key.ycor)&&
                     (door.xcor != bomb.xcor && door.ycor != bomb.ycor))  {
@@ -536,7 +553,7 @@ class GAME{
             mvprintw(coins1.ycor,coins1.xcor,"%c",(coins1.value));
         }
 
-        void movement() {
+        void movement(int mode = 0) {
             keypad(stdscr, TRUE);
             cbreak();
             noecho();
@@ -547,13 +564,30 @@ class GAME{
             int ch=0;
             int d=distance;
             int prev=0;
+            switch(mode){
+                case 1:
+                    moves =calcMoves()+6;
+                    mvprintw(0,55,"               ");
+                    mvprintw(0,55,"Mode : EASY");
+                    break;
+                case 2:
+                    mvprintw(0,55,"               ");
+                    mvprintw(0,55,"Mode : MEDIUM");                
+                    moves =calcMoves()+2;
+                    break;
+                case 3:
+                    mvprintw(0,55,"               ");
+                    mvprintw(0,55,"Mode : DIFFICULT");
+                    moves =calcMoves()+6;
+                    break;        
+            }
             for (int i=0;true;i++) {
                 ch = getch();
                 
                 mvprintw(player.ycor,player.xcor,".");
                 switch (ch) {
                     case KEY_UP:
-                        if (player.ycor>6 ) {
+                        if (player.ycor>5 ) {
                             if((i>0 && prev!= KEY_DOWN)||i==0){   
                                 player.ycor-=1;  
                                 prev = KEY_UP;
@@ -568,7 +602,7 @@ class GAME{
                         break;
 
                     case KEY_DOWN:
-                        if (player.ycor < size+3 ) {
+                        if (player.ycor < size+4 ) {
                             if((i>0 && prev!= KEY_UP)||i==0){
                                 player.ycor+=1; 
                                 prev = KEY_DOWN;  
@@ -582,7 +616,7 @@ class GAME{
                         break;
 
                     case KEY_LEFT:
-                        if (player.xcor > 28) {
+                        if (player.xcor > 25) {
                             if((i>0 && prev!= KEY_RIGHT)||i==0){
                                player.xcor-=3; 
                                prev = KEY_LEFT; 
@@ -598,7 +632,7 @@ class GAME{
                         break;
 
                     case KEY_RIGHT:
-                        if (player.xcor < (size*3)+19) {
+                        if (player.xcor < (size*3)+22) {
                             if((i>0 && prev!= KEY_LEFT)||i==0){
                                 player.xcor+=3;  
                                 prev = KEY_RIGHT;
@@ -742,8 +776,8 @@ class GAME{
             mvprintw(coins2.ycor,coins2.xcor,".");
             mvprintw(coins3.ycor,coins3.xcor,".");
             while(true){
-                coins1.xcor = 28 + ((rand() % 17)*3) ;
-                coins1.ycor = 6 + (rand() % 18);
+                coins1.xcor = 28 + ((rand() % (size-2)) * 3);
+                coins1.ycor = 6 + (rand() % (size-2));
                 if((coins1.xcor != player.xcor && coins1.ycor != player.ycor)&&
                     (coins1.xcor != bomb.xcor && coins1.ycor != bomb.ycor)&&
                     (coins1.xcor != key.xcor && coins1.ycor != key.ycor) && 
@@ -753,8 +787,8 @@ class GAME{
 
             }
              while(true){
-                coins2.xcor = 28 + ((rand() % 17)*3) ;
-                coins2.ycor = 6 + (rand() % 18);
+                coins2.xcor = 28 + ((rand() % (size-2)) * 3);
+                coins2.ycor =6 + (rand() % (size-2));
                 if((coins2.xcor != player.xcor && coins2.ycor != player.ycor)&&
                     (coins2.xcor != bomb.xcor && coins2.ycor != bomb.ycor)&&
                     (coins2.xcor != key.xcor && coins2.ycor != key.ycor) && 
@@ -766,8 +800,8 @@ class GAME{
             }
 
             while(true){
-                coins3.xcor = 28 + ((rand() % 17)*3) ;
-                coins3.ycor = 6 + (rand() % 18);
+                coins3.xcor = 28 + ((rand() % (size-2)) * 3);
+                coins3.ycor = 6 + (rand() % (size-2));
                 if((coins3.xcor != player.xcor && coins3.ycor != player.ycor)&&
                     (coins3.xcor != bomb.xcor && coins3.ycor != bomb.ycor)&&
                     (coins3.xcor != key.xcor && coins3.ycor != key.ycor) && 
