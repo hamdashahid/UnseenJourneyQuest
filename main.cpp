@@ -305,12 +305,17 @@ class GAME{
         bool doorstatus;
         bool loss ;
         bool win ;
+        int MODE;
         entity player;
+        entity Initialplayer;
         entity key;
         entity bomb;
         entity door;
         entity coins1;
+        entity Initialcoins1;
+        entity Initialcoins2;
         entity coins2;
+        entity Initialcoins3;
         entity coins3;
         List2pointers grid;
         List2pointers CoinCollection;
@@ -371,16 +376,19 @@ class GAME{
                 if(ch == 49){
                     size = 10;
                     undo = 6;
+                    MODE = 1;
                     GameScreen(1);
                     break;
                 }else if(ch == 50){
                     size = 15;
                     undo = 4;
+                    MODE = 2;
                     GameScreen(2);
                     break;
                 }else if(ch == 51){
                     size = 20;
                     undo = 1;
+                    MODE = 3;
                     GameScreen(3);
                     break;
                 }else if(ch == 27){
@@ -433,42 +441,76 @@ class GAME{
         void GameOverScreen(){ 
             clear();
             refresh();
-            mvprintw(3,5,"<====================================== UNSEEN  JOURNEY  QUEST =====================================>");
+            mvprintw(1,5,"<====================================== UNSEEN  JOURNEY  QUEST =====================================>");
 
             if(win == true){
-                mvprintw(5,30,"<=========== :) YOU WON THE GAME !!!!! :)==============>");
+                mvprintw(2,30,"<=========== :) YOU WON THE GAME !!!!! :)==============>");
             }else {
-                mvprintw(5,30,"<=========== :( YOU LOST THE GAME !!!!! :( ==============>");
+                mvprintw(2,30,"<=========== :( YOU LOST THE GAME !!!!! :( ==============>");
             }
             // mvprintw(5,45,"GAME OVER");
-            mvprintw(8,45,"Score :  ");
-            mvprintw(8,55,"%d",score);
-            mvprintw(10,45,"COINS COLLECTED AT : ");
+            mvprintw(3,50,"Mode :  ");
+            switch(MODE){
+                case 1:
+                    mvprintw(3,55,"EASY");
+                    break;
+                case 2:
+                    mvprintw(3,55,"MEDIUM");
+                    break;
+                case 3:
+                    mvprintw(3,55,"DIFFICULT");
+                    break;        
+            }
+            mvprintw(3,5,"Score :  ");
+            mvprintw(3,15,"%d",score);
+            mvprintw(6,85,"COINS COLLECTED AT : ");
             Node2pointers* temp = CoinCollection.head;
-            int x = 50;
-            int y = 11;
+            int x = 85;
+            int y = 7;
             while(temp!=NULL){
+                
+                mvprintw(y,x-1 ,"(" );
                 mvprintw(y,x ,"%d" , (temp->c).xcor );
-                x+=5;
+                mvprintw(y,x+2 ,"," );
+                x+=3;
                 mvprintw(y,x ,"%d" , (temp->c).ycor );
+                mvprintw(y,x+1 , ")" );
                 y++;
-                x=50;
+                x=85;
                 temp = temp->next;
             }
             y++;
-            mvprintw(y,45,"Initial Key Position : ");
-            mvprintw(y,70,"%d",key.xcor);
-            mvprintw(y,75,"%d",key.ycor);
+            mvprintw(y,85,"Initial Key Position : ");
+            mvprintw(y,109,"(");
+            mvprintw(y,110,"%d",key.xcor);
+            mvprintw(y,112,",");
+            mvprintw(y,113,"%d",key.ycor);
+            mvprintw(y,114,")");
 
-            mvprintw(y+2,45,"Initial Door Position : ");
-            mvprintw(y+2,70,"%d",door.xcor);
-            mvprintw(y+2,75,"%d",door.ycor);
+            mvprintw(y+2,85,"Initial Door Position : ");
+            mvprintw(y+2,109,"(");
+            mvprintw(y+2,110,"%d",door.xcor);
+            mvprintw(y+2,112,",");
+            mvprintw(y+2,113,"%d",door.ycor);
+            mvprintw(y+2,114,")");
 
-            mvprintw(y+4,45,"LEFT OVER MOVES : ");
-            mvprintw(y+4,70,"%d",moves);
 
-            mvprintw(y+6,45,"LEFT OVER UNDOS : ");
-            mvprintw(y+6,70,"%d",undo);
+            mvprintw(y+4,85,"LEFT OVER MOVES : ");
+            mvprintw(y+4,105,"%d",moves);
+
+            mvprintw(y+6,85,"LEFT OVER UNDOS : ");
+            mvprintw(y+6,105,"%d",undo);
+
+            mvprintw(4 , 30 , "THIS WAS THE INITIAL STATE OF GRID : ");
+            displayGrid();
+            
+            mvprintw(Initialplayer.ycor,Initialplayer.xcor,"%c",(Initialplayer.value));
+            mvprintw(key.ycor,key.xcor,"%c",(key.value));
+            mvprintw(bomb.ycor,bomb.xcor,"%c",(bomb.value));
+            mvprintw(door.ycor,door.xcor,"%c",(door.value));
+            mvprintw(Initialcoins1.ycor,Initialcoins1.xcor,"%c",(Initialcoins1.value));
+            mvprintw(Initialcoins2.ycor,Initialcoins2.xcor,"%c",(Initialcoins2.value));
+            mvprintw(Initialcoins3.ycor,Initialcoins3.xcor,"%c",(Initialcoins3.value));
 
             while(true){
                 int ch = getch();
@@ -550,7 +592,7 @@ class GAME{
             mvprintw(key.ycor,key.xcor,"%c",(key.value));
             mvprintw(bomb.ycor,bomb.xcor,"%c",(bomb.value));
             mvprintw(door.ycor,door.xcor,"%c",(door.value));
-            mvprintw(coins1.ycor,coins1.xcor,"%c",(coins1.value));
+            // mvprintw(coins1.ycor,coins1.xcor,"%c",(coins1.value));
         }
 
         void movement(int mode = 0) {
@@ -564,6 +606,9 @@ class GAME{
             int ch=0;
             int d=distance;
             int prev=0;
+            Initialplayer = player;
+            Initialcoins1 = coins1;
+            Initialcoins2 = coins2;
             switch(mode){
                 case 1:
                     moves =calcMoves()+6;
@@ -775,6 +820,9 @@ class GAME{
             mvprintw(coins1.ycor,coins1.xcor,".");
             mvprintw(coins2.ycor,coins2.xcor,".");
             mvprintw(coins3.ycor,coins3.xcor,".");
+            coins1.value = 'C';
+            coins2.value = 'C';
+            coins3.value = 'C';
             while(true){
                 coins1.xcor = 28 + ((rand() % (size-2)) * 3);
                 coins1.ycor = 6 + (rand() % (size-2));
@@ -881,7 +929,6 @@ int main(){
     GAME e;
 
     e.Display();
-
 
     return 0;
 }
