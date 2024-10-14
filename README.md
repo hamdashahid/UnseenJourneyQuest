@@ -38,9 +38,9 @@
     After compilation run ./abc to run the compiled game
 
 # Some Sample Screen Shots
-## Menu
+### Menu
 ![Menu](./screenshots/menu.png)
-## EASY MODE
+### EASY MODE
 ![EASY](./screenshots/easy.png)
 ## MEDIUM MODE
 ![MEDIUM](./screenshots/medium.png)
