@@ -38,6 +38,7 @@
     After compilation run ./abc to run the compiled game
 
 ## Some Sample Screen Shots
+    Menu
 ![Menu](./screenshots/menu.png)
     
 ## Copyright    
