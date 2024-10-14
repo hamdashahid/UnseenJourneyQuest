@@ -607,8 +607,15 @@ class GAME{
             int d=distance;
             int prev=0;
             Initialplayer = player;
-            Initialcoins1 = coins1;
-            Initialcoins2 = coins2;
+            Initialcoins1.xcor = coins1.xcor;
+            Initialcoins1.ycor = coins1.ycor;
+            Initialcoins1.value = coins1.value;
+            Initialcoins2.xcor = coins2.xcor;
+            Initialcoins2.ycor = coins2.ycor;
+            Initialcoins2.value = coins2.value;
+            Initialcoins3.xcor = coins3.xcor;
+            Initialcoins3.ycor = coins3.ycor;
+            Initialcoins3.value = coins3.value;
             switch(mode){
                 case 1:
                     moves =calcMoves()+6;
@@ -632,7 +639,7 @@ class GAME{
                 mvprintw(player.ycor,player.xcor,".");
                 switch (ch) {
                     case KEY_UP:
-                        if (player.ycor>5 ) {
+                        if (player.ycor>6 ) {
                             if((i>0 && prev!= KEY_DOWN)||i==0){   
                                 player.ycor-=1;  
                                 prev = KEY_UP;
@@ -647,7 +654,7 @@ class GAME{
                         break;
 
                     case KEY_DOWN:
-                        if (player.ycor < size+4 ) {
+                        if (player.ycor < size+3 ) {
                             if((i>0 && prev!= KEY_UP)||i==0){
                                 player.ycor+=1; 
                                 prev = KEY_DOWN;  
@@ -661,7 +668,7 @@ class GAME{
                         break;
 
                     case KEY_LEFT:
-                        if (player.xcor > 25) {
+                        if (player.xcor > 28) {
                             if((i>0 && prev!= KEY_RIGHT)||i==0){
                                player.xcor-=3; 
                                prev = KEY_LEFT; 
@@ -677,7 +684,7 @@ class GAME{
                         break;
 
                     case KEY_RIGHT:
-                        if (player.xcor < (size*3)+22) {
+                        if (player.xcor < (size*3)+19) {
                             if((i>0 && prev!= KEY_LEFT)||i==0){
                                 player.xcor+=3;  
                                 prev = KEY_RIGHT;
