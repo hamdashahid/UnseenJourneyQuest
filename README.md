@@ -1,4 +1,4 @@
-## UnseenJourneyQuest
+# UnseenJourneyQuest
 
 # Description
     Unseen Journey Quest is an awesome game.
@@ -37,10 +37,17 @@
     Run the command  { " g++ -o abc main.cpp -lncurses "} 
     After compilation run ./abc to run the compiled game
 
-## Some Sample Screen Shots
-    Menu
+# Some Sample Screen Shots
+## Menu
 ![Menu](./screenshots/menu.png)
-    
+## EASY MODE
+![EASY](./screenshots/easy.png)
+## MEDIUM MODE
+![MEDIUM](./screenshots/medium.png)
+## DIFFICULT MODE
+![DIFFICULT](./screenshots/difficult.png)
+## GAME OVER 
+![GameOver](./screenshots/gameover.png)    
 ## Copyright    
 
 © 2024 Hamda Shahid. All rights reserved.
