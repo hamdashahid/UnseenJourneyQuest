@@ -312,10 +312,10 @@ class GAME{
         entity bomb;
         entity door;
         entity coins1;
-        entity Initialcoins1;
-        entity Initialcoins2;
+        // entity Initialcoins1;
+        // entity Initialcoins2;
         entity coins2;
-        entity Initialcoins3;
+        // entity Initialcoins3;
         entity coins3;
         List2pointers grid;
         List2pointers CoinCollection;
@@ -419,6 +419,10 @@ class GAME{
             displayGrid();
             placements();
             Coins();
+            Initialplayer = player;
+            // Initialcoins1 = entity(coins1.xcor,coins1.ycor,coins1.value);
+            // Initialcoins2 = entity(coins2.xcor,coins2.ycor,coins2.value);
+            // Initialcoins3 = entity(coins3.xcor,coins3.ycor,coins3.value);
             switch(mode){
                 case 1:
                     movement(1);
@@ -442,7 +446,7 @@ class GAME{
             clear();
             refresh();
             mvprintw(1,5,"<====================================== UNSEEN  JOURNEY  QUEST =====================================>");
-
+            displayGrid();
             if(win == true){
                 mvprintw(2,30,"<=========== :) YOU WON THE GAME !!!!! :)==============>");
             }else {
@@ -474,9 +478,11 @@ class GAME{
                 mvprintw(y,x+2 ,"," );
                 x+=3;
                 mvprintw(y,x ,"%d" , (temp->c).ycor );
-                mvprintw(y,x+1 , ")" );
+                mvprintw(y,x+2 , ")" );
                 y++;
                 x=85;
+                mvprintw((temp->c).ycor,(temp->c).xcor,"  ");
+                mvprintw((temp->c).ycor,(temp->c).xcor,"C");
                 temp = temp->next;
             }
             y++;
@@ -485,14 +491,14 @@ class GAME{
             mvprintw(y,110,"%d",key.xcor);
             mvprintw(y,112,",");
             mvprintw(y,113,"%d",key.ycor);
-            mvprintw(y,114,")");
+            mvprintw(y,115,")");
 
             mvprintw(y+2,85,"Initial Door Position : ");
             mvprintw(y+2,109,"(");
             mvprintw(y+2,110,"%d",door.xcor);
             mvprintw(y+2,112,",");
             mvprintw(y+2,113,"%d",door.ycor);
-            mvprintw(y+2,114,")");
+            mvprintw(y+2,115,")");
 
 
             mvprintw(y+4,85,"LEFT OVER MOVES : ");
@@ -502,15 +508,14 @@ class GAME{
             mvprintw(y+6,105,"%d",undo);
 
             mvprintw(4 , 30 , "THIS WAS THE INITIAL STATE OF GRID : ");
-            displayGrid();
             
             mvprintw(Initialplayer.ycor,Initialplayer.xcor,"%c",(Initialplayer.value));
             mvprintw(key.ycor,key.xcor,"%c",(key.value));
             mvprintw(bomb.ycor,bomb.xcor,"%c",(bomb.value));
             mvprintw(door.ycor,door.xcor,"%c",(door.value));
-            mvprintw(Initialcoins1.ycor,Initialcoins1.xcor,"%c",(Initialcoins1.value));
-            mvprintw(Initialcoins2.ycor,Initialcoins2.xcor,"%c",(Initialcoins2.value));
-            mvprintw(Initialcoins3.ycor,Initialcoins3.xcor,"%c",(Initialcoins3.value));
+            // mvprintw(Initialcoins1.ycor,Initialcoins1.xcor,"%c",(Initialcoins1.value));
+            // mvprintw(Initialcoins2.ycor,Initialcoins2.xcor,"%c",(Initialcoins2.value));
+            // mvprintw(Initialcoins3.ycor,Initialcoins3.xcor,"%c",(Initialcoins3.value));
 
             while(true){
                 int ch = getch();
@@ -606,16 +611,16 @@ class GAME{
             int ch=0;
             int d=distance;
             int prev=0;
-            Initialplayer = player;
-            Initialcoins1.xcor = coins1.xcor;
-            Initialcoins1.ycor = coins1.ycor;
-            Initialcoins1.value = coins1.value;
-            Initialcoins2.xcor = coins2.xcor;
-            Initialcoins2.ycor = coins2.ycor;
-            Initialcoins2.value = coins2.value;
-            Initialcoins3.xcor = coins3.xcor;
-            Initialcoins3.ycor = coins3.ycor;
-            Initialcoins3.value = coins3.value;
+
+            // Initialcoins1.xcor = ;
+            // Initialcoins1.ycor = coins1.ycor;
+            // Initialcoins1.value = coins1.value;
+            // Initialcoins2.xcor = coins2.xcor;
+            // Initialcoins2.ycor = coins2.ycor;
+            // Initialcoins2.value = coins2.value;
+            // Initialcoins3.xcor = coins3.xcor;
+            // Initialcoins3.ycor = coins3.ycor;
+            // Initialcoins3.value = coins3.value;
             switch(mode){
                 case 1:
                     moves =calcMoves()+6;
@@ -877,7 +882,7 @@ class GAME{
                 mvprintw(coins1.ycor,coins1.xcor,".");
                 score+=2;
                 undo++;
-                Node2pointers* n = new Node2pointers(coins1.xcor , coins1.ycor);
+                Node2pointers* n = new Node2pointers(player.xcor , player.ycor);
                 CoinCollection.append(n);
                 coins1.xcor =1000;
                 coins1.ycor = 1000;
@@ -886,7 +891,7 @@ class GAME{
                 mvprintw(coins2.ycor,coins2.xcor,".");
                 score+=2;
                 undo++;
-                Node2pointers* n = new Node2pointers(coins2.xcor , coins2.ycor);
+                Node2pointers* n = new Node2pointers(player.xcor , player.ycor);
                 CoinCollection.append(n);
                 coins2.xcor =1000;
                 coins2.ycor = 1000;
@@ -895,7 +900,7 @@ class GAME{
                 mvprintw(coins3.ycor,coins3.xcor,".");
                 score+=2;
                 undo++;
-                Node2pointers* n = new Node2pointers(coins3.xcor , coins3.ycor);
+                Node2pointers* n = new Node2pointers(player.xcor , player.ycor);
                 CoinCollection.append(n);
                 coins3.xcor =1000;
                 coins3.ycor = 1000;

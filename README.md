@@ -1,4 +1,4 @@
-# UnseenJourneyQuest
+## UnseenJourneyQuest
 
 # Description
     Unseen Journey Quest is an awesome game.
@@ -8,18 +8,18 @@
     where it is. You can sense when you’re moving closer to the key, guiding your steps
     through the darkness."
 # Key Features
-    
     There are three modes : EASY , MEDIUM , DIFFICULT. For each mode the size of grid , number of moves and the undos are set according to distance between the player and the key.
-
-
+    The Easy mode has 10*10 grid 
+    The Medium Mode has 15*15 grid
+    THe Difficult Mode has 20*20 grid
     The player poisition is visible and generated randomly .You can move the player inside the grid.
-
     There is an Undo feature as well.
-
     Some Bombs are invisible and are generated randomly.
-
     The Coins will be generated randomly after every 15 seconds.
-
     There is a hint feature that tells whether we are moving closer or further away from the key and when the key is found it tells about the door.
 
-    
+# Instructions
+    To select the mode : Press {1 for EASY MODE}
+    To select the mode : Press {2 for MEDIUM MODE}
+    To select the mode : Press {3 for DIFFICULT MODE}
+
