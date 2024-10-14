@@ -42,7 +42,7 @@
     ![Easy Mode](./screenshots/easy.png)
     ![Medium Mode](./screenshots/medium.png)
     ![Difficult Mode](./screenshots/difficult.png)
-    ![Game Over](./screenshots/gameover.png)
+    ![Game Over](./screenshots/difficult.png)
     
 ## Copyright    
 
