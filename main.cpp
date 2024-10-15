@@ -450,6 +450,11 @@ class GAME{
             // mvprintw(21,64,"%d",Initialcoins2.ycor);
             // mvprintw(22,60,"%d",Initialcoins3.xcor);
             // mvprintw(22,64,"%d",Initialcoins3.ycor);
+
+            // mvprintw(27,50,"PLAYER POSITION: ");
+            // mvprintw(27,65,"%d",player.xcor);
+            // mvprintw(27,58,"%d",player.ycor);
+
             switch(mode){
                 case 1:
                     movement(1);
@@ -543,6 +548,10 @@ class GAME{
             mvprintw(Initialcoins1.ycor,Initialcoins1.xcor,"C");
             mvprintw(Initialcoins2.ycor,Initialcoins2.xcor,"C");
             mvprintw(Initialcoins3.ycor,Initialcoins3.xcor,"C");
+
+            // mvprintw(27,50,"PLAYER POSITION: ");
+            // mvprintw(27,65,"%d",player.xcor);
+            // mvprintw(27,58,"%d",player.ycor);
 
             // mvprintw(coins1.ycor,coins1.xcor,"4");
             // mvprintw(coins2.ycor,coins2.xcor,"5");
@@ -675,7 +684,7 @@ class GAME{
                 case 3:
                     mvprintw(0,55,"               ");
                     mvprintw(0,55,"Mode : DIFFICULT");
-                    moves =calcMoves()+6;
+                    moves =calcMoves();
                     break;        
             }
             for (int i=0;true;i++) {
@@ -851,12 +860,12 @@ class GAME{
         }
 
         int calcMoves(){
-            int x1 = player.xcor - key.xcor;
-            int y1 = player.ycor - key.ycor;
+            int x1 = (((player.xcor-25)/3)+1) - (((key.xcor-25)/3)+1);
+            int y1 = ((player.ycor-5)+1) - ((key.ycor-5)+1);
             // int x2 = player.xcor - door.xcor;
             // int y2 = player.ycor - door.ycor;
-            int x3 = key.xcor - door.xcor;
-            int y3 = key.ycor - door.ycor;
+            int x3 = (((key.xcor-25)/3)+1) - (((door.xcor-25)/3)+1);
+            int y3 = ((key.ycor-5)+1) - ((door.ycor-5)+1);
 
             x1 = x1<0? -1*x1 : x1;
             // x2 = x2<0? -1*x2 : x2;
@@ -865,7 +874,7 @@ class GAME{
             // y2 = y2<0? -1*y2 : y2;
             y3 = y3<0? -1*y3 : y3;
 
-            return (x1+x3+y1+y3)/3;
+            return (x1+y1+x3+y3);
         }
 
         void Coins(){
