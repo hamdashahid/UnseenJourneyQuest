@@ -312,10 +312,10 @@ class GAME{
         entity bomb;
         entity door;
         entity coins1;
-        // entity Initialcoins1;
-        // entity Initialcoins2;
+        entity Initialcoins1;
+        entity Initialcoins2;
         entity coins2;
-        // entity Initialcoins3;
+        entity Initialcoins3;
         entity coins3;
         List2pointers grid;
         List2pointers CoinCollection;
@@ -420,9 +420,36 @@ class GAME{
             placements();
             Coins();
             Initialplayer = player;
-            // Initialcoins1 = entity(coins1.xcor,coins1.ycor,coins1.value);
-            // Initialcoins2 = entity(coins2.xcor,coins2.ycor,coins2.value);
-            // Initialcoins3 = entity(coins3.xcor,coins3.ycor,coins3.value);
+            // mvprintw(0,0,)
+            // mvprintw(20,50,"%d",coins1.xcor);
+            // mvprintw(20,54,"%d",coins1.ycor);
+            // mvprintw(21,50,"%d",coins2.xcor);
+            // mvprintw(21,54,"%d",coins2.ycor);
+            // mvprintw(22,50,"%d",coins3.xcor);
+            // mvprintw(22,54,"%d",coins3.ycor);
+
+            mvprintw(coins1.ycor,coins1.xcor,"C");
+            mvprintw(coins2.ycor,coins2.xcor,"C");
+            mvprintw(coins3.ycor,coins3.xcor,"C");
+
+            Initialcoins1 = entity(coins1.xcor,coins1.ycor,coins1.value);
+            Initialcoins2 = entity(coins2.xcor,coins2.ycor,coins2.value);
+            Initialcoins3 = entity(coins3.xcor,coins3.ycor,coins3.value);
+
+            // mvprintw(27,60,"%d",coins1.xcor);
+            // mvprintw(27,64,"%d",coins1.ycor);
+            // mvprintw(28,60,"%d",coins2.xcor);
+            // mvprintw(28,64,"%d",coins2.ycor);
+            // mvprintw(29,60,"%d",coins3.xcor);
+            // mvprintw(29,64,"%d",coins3.ycor);
+
+
+            // mvprintw(20,60,"%d",Initialcoins1.xcor);
+            // mvprintw(20,64,"%d",Initialcoins1.ycor);
+            // mvprintw(21,60,"%d",Initialcoins2.xcor);
+            // mvprintw(21,64,"%d",Initialcoins2.ycor);
+            // mvprintw(22,60,"%d",Initialcoins3.xcor);
+            // mvprintw(22,64,"%d",Initialcoins3.ycor);
             switch(mode){
                 case 1:
                     movement(1);
@@ -481,8 +508,8 @@ class GAME{
                 mvprintw(y,x+2 , ")" );
                 y++;
                 x=85;
-                mvprintw((temp->c).ycor,(temp->c).xcor,"  ");
-                mvprintw((temp->c).ycor,(temp->c).xcor,"C");
+                // mvprintw((temp->c).ycor,(temp->c).xcor,"  ");
+                // mvprintw((temp->c).ycor,(temp->c).xcor,"C");
                 temp = temp->next;
             }
             y++;
@@ -513,10 +540,23 @@ class GAME{
             mvprintw(key.ycor,key.xcor,"%c",(key.value));
             mvprintw(bomb.ycor,bomb.xcor,"%c",(bomb.value));
             mvprintw(door.ycor,door.xcor,"%c",(door.value));
-            // mvprintw(Initialcoins1.ycor,Initialcoins1.xcor,"%c",(Initialcoins1.value));
-            // mvprintw(Initialcoins2.ycor,Initialcoins2.xcor,"%c",(Initialcoins2.value));
-            // mvprintw(Initialcoins3.ycor,Initialcoins3.xcor,"%c",(Initialcoins3.value));
+            mvprintw(Initialcoins1.ycor,Initialcoins1.xcor,"C");
+            mvprintw(Initialcoins2.ycor,Initialcoins2.xcor,"C");
+            mvprintw(Initialcoins3.ycor,Initialcoins3.xcor,"C");
 
+            // mvprintw(coins1.ycor,coins1.xcor,"4");
+            // mvprintw(coins2.ycor,coins2.xcor,"5");
+            // mvprintw(coins3.ycor,coins3.xcor,"6");
+
+            // getch();
+
+            // mvprintw(27,60,"%d",Initialcoins1.xcor);
+            // mvprintw(27,64,"%d",Initialcoins1.ycor);
+            // mvprintw(28,60,"%d",Initialcoins2.xcor);
+            // mvprintw(28,64,"%d",Initialcoins2.ycor);
+            // mvprintw(29,60,"%d",Initialcoins3.xcor);
+            // mvprintw(29,64,"%d",Initialcoins3.ycor);
+            refresh();
             while(true){
                 int ch = getch();
                 if(ch == 27){
@@ -594,9 +634,9 @@ class GAME{
                 }
             }
             mvprintw(player.ycor,player.xcor,"%c",(player.value));
-            // mvprintw(key.ycor,key.xcor,"%c",(key.value));
-            // mvprintw(bomb.ycor,bomb.xcor,"%c",(bomb.value));
-            // mvprintw(door.ycor,door.xcor,"%c",(door.value));
+            mvprintw(key.ycor,key.xcor,"%c",(key.value));
+            mvprintw(bomb.ycor,bomb.xcor,"%c",(bomb.value));
+            mvprintw(door.ycor,door.xcor,"%c",(door.value));
             // mvprintw(coins1.ycor,coins1.xcor,"%c",(coins1.value));
         }
 
@@ -741,7 +781,7 @@ class GAME{
                         mvprintw(1,90,"FURTHER AWAY");
                     }
                 }
-                if(i%5000000 == 0){
+                if(i%1666666 == 0 && i>0){
                     Coins();
                 }
                 if(player.xcor == door.xcor && player.ycor == door.ycor && keystatus == true){
@@ -813,25 +853,26 @@ class GAME{
         int calcMoves(){
             int x1 = player.xcor - key.xcor;
             int y1 = player.ycor - key.ycor;
-            int x2 = player.xcor - door.xcor;
-            int y2 = player.ycor - door.ycor;
+            // int x2 = player.xcor - door.xcor;
+            // int y2 = player.ycor - door.ycor;
             int x3 = key.xcor - door.xcor;
-            int y3 = key.ycor - key.ycor;
+            int y3 = key.ycor - door.ycor;
 
             x1 = x1<0? -1*x1 : x1;
-            x2 = x2<0? -1*x2 : x2;
+            // x2 = x2<0? -1*x2 : x2;
             x3 = x3<0? -1*x3 : x3;
             y1 = y1<0? -1*y1 : y1;
-            y2 = y2<0? -1*y2 : y2;
+            // y2 = y2<0? -1*y2 : y2;
             y3 = y3<0? -1*y3 : y3;
 
-            return x1+x2+x3+y1+y2+y3;
+            return (x1+x3+y1+y3)/3;
         }
 
         void Coins(){
-            mvprintw(coins1.ycor,coins1.xcor,".");
-            mvprintw(coins2.ycor,coins2.xcor,".");
-            mvprintw(coins3.ycor,coins3.xcor,".");
+
+            entity prevc1 = entity(coins1.xcor,coins1.ycor,coins1.value);
+            entity prevc2 = entity(coins2.xcor,coins2.ycor,coins2.value);
+            entity prevc3 = entity(coins3.xcor,coins3.ycor,coins3.value);
             coins1.value = 'C';
             coins2.value = 'C';
             coins3.value = 'C';
@@ -872,9 +913,15 @@ class GAME{
                     }
 
             }
+            mvprintw(prevc1.ycor,prevc1.xcor,".");
+            mvprintw(prevc2.ycor,prevc2.xcor,".");
+            mvprintw(prevc3.ycor,prevc3.xcor,".");
+
             mvprintw(coins1.ycor,coins1.xcor,"C");
             mvprintw(coins2.ycor,coins2.xcor,"C");
             mvprintw(coins3.ycor,coins3.xcor,"C");
+
+            refresh();
         }
 
         void CoinFound(){
