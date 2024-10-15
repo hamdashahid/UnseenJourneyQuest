@@ -310,6 +310,7 @@ class GAME{
         entity Initialplayer;
         entity key;
         entity bomb;
+        entity bomb1;
         entity door;
         entity coins1;
         entity Initialcoins1;
@@ -332,6 +333,7 @@ class GAME{
             player = entity(1000,1000,'P');
             key = entity(1000,1000,'K');
             bomb = entity(1200,1200,'B');
+            bomb1 = entity(1200,1200,'B');
             door = entity(1300,1300,'D');
             coins1 = entity(1400,1400,'C');
             coins2 = entity(1500,1500,'C');
@@ -544,6 +546,7 @@ class GAME{
             mvprintw(Initialplayer.ycor,Initialplayer.xcor,"%c",(Initialplayer.value));
             mvprintw(key.ycor,key.xcor,"%c",(key.value));
             mvprintw(bomb.ycor,bomb.xcor,"%c",(bomb.value));
+            mvprintw(bomb1.ycor,bomb1.xcor,"%c",(bomb1.value));
             mvprintw(door.ycor,door.xcor,"%c",(door.value));
             mvprintw(Initialcoins1.ycor,Initialcoins1.xcor,"C");
             mvprintw(Initialcoins2.ycor,Initialcoins2.xcor,"C");
@@ -619,8 +622,8 @@ class GAME{
             player.xcor = 28 + ((rand() % (size-2)) * 3);
             player.ycor = 6 + (rand() % (size-2));
             while(true){
-                key.xcor = 28 + ((rand() % size-3)*3) ;
-                key.ycor = 6 + (rand() % size-2);
+                key.xcor = 28 + ((rand() % size-2)*3) ;
+                key.ycor = 6 + (rand() % (size-2));
                 if(key.xcor != player.xcor && key.ycor != player.ycor)  {
                    break;
                 }
@@ -634,17 +637,28 @@ class GAME{
                 }
             }
             while(true){
+                bomb1.xcor = 28 + ((rand() % (size-2)) * 3);
+                bomb1.ycor = 6 + (rand() % (size-2));
+                if((bomb1.xcor != player.xcor && bomb1.ycor != player.ycor) &&
+                    (bomb1.xcor != key.xcor && bomb1.ycor != key.ycor)&&
+                    (bomb1.xcor != bomb.xcor && bomb1.ycor != bomb.ycor))  {
+                   break;
+                }
+            }
+            while(true){
                 door.xcor = 28 + ((rand() % (size-2)) * 3);
                 door.ycor = 6 + (rand() % (size-2));
                 if((door.xcor != player.xcor && door.ycor != player.ycor) &&
                     (door.xcor != key.xcor && door.ycor != key.ycor)&&
-                    (door.xcor != bomb.xcor && door.ycor != bomb.ycor))  {
+                    (door.xcor != bomb.xcor && door.ycor != bomb.ycor)&&
+                    (door.xcor!= bomb1.xcor && door.ycor!=bomb1.ycor))  {
                    break;
                 }
             }
             mvprintw(player.ycor,player.xcor,"%c",(player.value));
             mvprintw(key.ycor,key.xcor,"%c",(key.value));
             mvprintw(bomb.ycor,bomb.xcor,"%c",(bomb.value));
+            mvprintw(bomb1.ycor,bomb1.xcor,"%c",(bomb.value));
             mvprintw(door.ycor,door.xcor,"%c",(door.value));
             // mvprintw(coins1.ycor,coins1.xcor,"%c",(coins1.value));
         }
@@ -891,7 +905,8 @@ class GAME{
                 if((coins1.xcor != player.xcor && coins1.ycor != player.ycor)&&
                     (coins1.xcor != bomb.xcor && coins1.ycor != bomb.ycor)&&
                     (coins1.xcor != key.xcor && coins1.ycor != key.ycor) && 
-                    (coins1.xcor != door.xcor && coins1.ycor != door.ycor)){
+                    (coins1.xcor != door.xcor && coins1.ycor != door.ycor)&&
+                    (coins1.xcor != bomb1.xcor && coins1.ycor != bomb1.ycor)){
                         break;
                     }
 
@@ -903,7 +918,8 @@ class GAME{
                     (coins2.xcor != bomb.xcor && coins2.ycor != bomb.ycor)&&
                     (coins2.xcor != key.xcor && coins2.ycor != key.ycor) && 
                     (coins2.xcor != door.xcor && coins2.ycor != door.ycor)&&
-                    (coins2.xcor != coins1.xcor && coins2.ycor != coins1.ycor)){
+                    (coins2.xcor != coins1.xcor && coins2.ycor != coins1.ycor)&&
+                    (coins2.xcor != bomb1.xcor && coins2.ycor != bomb1.ycor)){
                         break;
                     }
 
@@ -917,7 +933,8 @@ class GAME{
                     (coins3.xcor != key.xcor && coins3.ycor != key.ycor) && 
                     (coins3.xcor != door.xcor && coins3.ycor != door.ycor)&&
                     (coins3.xcor != coins1.xcor && coins3.ycor != coins1.ycor)&&
-                    (coins3.xcor != coins2.xcor && coins3.ycor != coins2.ycor)){
+                    (coins3.xcor != coins2.xcor && coins3.ycor != coins2.ycor)&&
+                    (coins3.xcor != bomb1.xcor && coins3.ycor != bomb1.ycor)){
                         break;
                     }
 
@@ -973,6 +990,9 @@ class GAME{
             if (player.xcor == bomb.xcor && player.ycor == bomb.ycor){
                 loss = true;
             }
+            if (player.xcor == bomb1.xcor && player.ycor == bomb1.ycor){
+                loss = true;
+            }
             if(moves == 0 && doorstatus == false){
                 loss = true;
             }
@@ -994,6 +1014,7 @@ class GAME{
 };
 
 int main(){
+    srand(time(NULL));
     GAME e;
 
     e.Display();
