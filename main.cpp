@@ -622,7 +622,7 @@ class GAME{
             player.xcor = 28 + ((rand() % (size-2)) * 3);
             player.ycor = 6 + (rand() % (size-2));
             while(true){
-                key.xcor = 28 + ((rand() % size-2)*3) ;
+                key.xcor = 28 + ((rand() % (size-2))*3) ;
                 key.ycor = 6 + (rand() % (size-2));
                 if(key.xcor != player.xcor && key.ycor != player.ycor)  {
                    break;
@@ -767,7 +767,9 @@ class GAME{
 
                     case 'U':
                     case 'u':
-                        UndoMove();
+                        if(undo > 0){
+                            UndoMove();
+                        }
                         distance = d;
                         break;    
                     case 27: 
@@ -995,6 +997,9 @@ class GAME{
             }
             if(moves == 0 && doorstatus == false){
                 loss = true;
+            }
+            if(moves == 0 && doorstatus == true){
+                win = true;
             }
             if(moves>0 && doorstatus == true){
                 win = true;
