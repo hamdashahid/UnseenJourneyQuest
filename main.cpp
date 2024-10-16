@@ -656,10 +656,10 @@ class GAME{
                 }
             }
             mvprintw(player.ycor,player.xcor,"%c",(player.value));
-            mvprintw(key.ycor,key.xcor,"%c",(key.value));
-            mvprintw(bomb.ycor,bomb.xcor,"%c",(bomb.value));
-            mvprintw(bomb1.ycor,bomb1.xcor,"%c",(bomb.value));
-            mvprintw(door.ycor,door.xcor,"%c",(door.value));
+            // mvprintw(key.ycor,key.xcor,"%c",(key.value));
+            // mvprintw(bomb.ycor,bomb.xcor,"%c",(bomb.value));
+            // mvprintw(bomb1.ycor,bomb1.xcor,"%c",(bomb.value));
+            // mvprintw(door.ycor,door.xcor,"%c",(door.value));
             // mvprintw(coins1.ycor,coins1.xcor,"%c",(coins1.value));
         }
 
